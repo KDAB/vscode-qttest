@@ -90,7 +90,7 @@ class KDABQtTest {
 			}
 
 			for (var executable of tests.qtTestExecutables) {
-				const item = controller.createTestItem(executable.id, executable.label, vscode.Uri.file(executable.filename));
+				const item = controller.createTestItem(executable.id, executable.label);
 				item.canResolveChildren = true;
 				controller.items.add(item);
 				thisExtension.testMap.set(item, executable);
@@ -119,7 +119,7 @@ class KDABQtTest {
 		}
 
 		for (let slot of testExecutable.slots) {
-			const subitem = controller.createTestItem(slot.id, slot.name, vscode.Uri.file(slot.absoluteFilePath));
+			const subitem = controller.createTestItem(slot.id, slot.name);
 			item.children.add(subitem);
 			this.individualTestMap.set(subitem, slot);
 		}
