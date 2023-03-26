@@ -1,16 +1,22 @@
 # KDAB QtTest
 
-This extension allows VSCode to know about Qt Tests. QtTestLib tests will appear in the side bar, under "Testing".<br>
-The test slots are also exposed and runnable individually.
+This extension allows VSCode to know about [Qt Tests](https://doc.qt.io/qt-6/qtest-overview.html). QtTestLib tests will appear in the side bar, under "Testing".<br>
+The test slots are also exposed and can be run individually.
 
 ## Requirements
 
-Only `CMake` based projects are supported at this time. The cmake extension (ms-vscode.cmake-tools) is used to determine
-the build directory, and `ctest` is invoked to list the available tests, which were added with `add_test()`.
+Only `CMake` based projects are supported at this time. The [cmake extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode.cmake-tools) is used to determine
+the build directory and `ctest` is invoked to list the available tests, which were added with [add_test()](https://cmake.org/cmake/help/latest/command/add_test.html).
+
+## Features
+- Listing and running Qt tests
+- Listing and running individual QTest test slots
 
 ## Future plans
 
-The bulk of this extension's code lives in a separate [nodejs module](https://www.npmjs.com/package/@iamsergio/qttest-utils). That module is reusable, and exposes API ready to be used by other test extensions. We might integrate it with the `TestMate` extension, if its authors agree, or we might keep it separate, or both.
+We might try to contribute QtTest support to [C++ TestMate](https://marketplace.visualstudio.com/items?itemName=matepek.vscode-catch2-test-adapter), however, I think it's also fine to keep it as a separate extension, as most of the code is already provided by VSCode, there wouldn't be any code savings by integrating it.
+<br>
+Eitherway, we've moved the bulk of this extension's code into a separate [nodejs module](https://www.npmjs.com/package/@iamsergio/qttest-utils). That module is reusable, and exposes API ready to be used by other test extensions easily.
 
 
 ## Troubleshooting
