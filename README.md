@@ -16,7 +16,7 @@ the build directory and `ctest` is invoked to list the available tests, which we
 
 We might try to contribute QtTest support to [C++ TestMate](https://marketplace.visualstudio.com/items?itemName=matepek.vscode-catch2-test-adapter), however, I think it's also fine to keep it as a separate extension, as most of the code is already provided by VSCode, there wouldn't be any code savings by integrating it.
 <br>
-Eitherway, we've moved the bulk of this extension's code into a separate [nodejs module](https://www.npmjs.com/package/@iamsergio/qttest-utils). That module is reusable, and exposes API ready to be used by other test extensions easily.
+Either way, we've moved the bulk of this extension's code into a separate [nodejs module](https://www.npmjs.com/package/@iamsergio/qttest-utils). That module is reusable and exposes API ready to be used by other test extensions easily.
 
 
 ## Troubleshooting
