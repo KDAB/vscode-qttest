@@ -3,3 +3,13 @@ dist
 node_modules
 .vscode-test/
 *.vsix
+.vscode
+*_autogen
+CMakeFiles/
+.ninja_deps
+.ninja_log
+CMakeCache.txt
+build.ninja
+cmake_install.cmake
+test1
+build-dev
