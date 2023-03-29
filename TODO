@@ -1,1 +1,3 @@
 - Reload tree when CMake changes build directory
+- Add a test to make it easier to debug
+- Fix status when running the top-level test
