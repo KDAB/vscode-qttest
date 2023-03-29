@@ -15,3 +15,8 @@ add_executable(test3 test3.cpp)
 target_link_libraries(test1 Qt5::Test)
 target_link_libraries(test2 Qt5::Test)
 target_link_libraries(test3 Qt5::Test)
+
+enable_testing()
+add_test(NAME test1 COMMAND test1)
+add_test(NAME test2 COMMAND test2)
+add_test(NAME test3 COMMAND test3)
