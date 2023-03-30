@@ -13,3 +13,4 @@ build.ninja
 cmake_install.cmake
 test1
 build-dev
+/test/qt_test/compile_commands.json
