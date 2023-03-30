@@ -10,7 +10,7 @@ class MyTest : public QObject {
 private Q_SLOTS:
   void test1() {}
   void test2() {}
-  void test3() { QFAIL("failed"); }
+  void testShouldFail() { QFAIL("failed"); }
 };
 
 QTEST_MAIN(MyTest);

@@ -238,13 +238,12 @@ async function runHandler(
 
 				if (result) {
 					run.passed(test, Date.now() - start);
-
-					if (qtTestExecutable) {
-						updateStatusForSubTests(qtTestExecutable, run);
-					}
-
 				} else {
 					run.failed(test, new vscode.TestMessage("Test failed"), Date.now() - start);
+				}
+
+				if (qtTestExecutable) {
+					updateStatusForSubTests(qtTestExecutable, run);
 				}
 			}
 
@@ -259,9 +258,12 @@ async function runHandler(
 function updateStatusForSubTests(parentTest: QtTest, run: vscode.TestRun) {
 	if (!parentTest.slots) { return; }
 
-	// only success supported at this point
 	for (var slot of parentTest.slots) {
-		run.passed(slot.vscodeTestItem);
+		if (slot.lastTestFailure) {
+			run.failed(slot.vscodeTestItem, new vscode.TestMessage("Test failed on line " + slot.lastTestFailure.lineNumber));
+		} else {
+			run.passed(slot.vscodeTestItem);
+		}
 	}
 }
 
