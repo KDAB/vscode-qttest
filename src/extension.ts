@@ -93,6 +93,7 @@ class KDABQtTest {
 				const item = controller.createTestItem(executable.id, executable.label);
 				item.canResolveChildren = true;
 				controller.items.add(item);
+				executable.vscodeTestItem = item;
 				this.testMap.set(item, executable);
 			}
 		}
@@ -120,6 +121,7 @@ class KDABQtTest {
 
 		for (let slot of testExecutable.slots) {
 			const subitem = controller.createTestItem(slot.id, slot.name);
+			slot.vscodeTestItem = subitem;
 			item.children.add(subitem);
 			this.individualTestMap.set(subitem, slot);
 		}
