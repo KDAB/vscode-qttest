@@ -93,14 +93,14 @@ class KDABQtTest {
 				const item = controller.createTestItem(executable.id, executable.label);
 				item.canResolveChildren = true;
 				controller.items.add(item);
-				thisExtension.testMap.set(item, executable);
+				this.testMap.set(item, executable);
 			}
 		}
 	}
 
 	public async parseTestsInExecutable(item: vscode.TestItem, controller: vscode.TestController) {
 
-		let testExecutable: QtTest | undefined = thisExtension.testMap.get(item);
+		let testExecutable: QtTest | undefined = this.testMap.get(item);
 		if (!testExecutable) {
 			this.log("ERROR: parseTestsInExecutable: No QtTest");
 			return;
