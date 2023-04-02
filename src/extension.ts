@@ -17,6 +17,7 @@ class KDABQtTest {
 	public channel: vscode.OutputChannel | undefined;
 	public testMap = new WeakMap<vscode.TestItem, QtTest>();
 	public individualTestMap = new WeakMap<vscode.TestItem, QtTestSlot>();
+	public qttests: QtTests | undefined;
 
 	public log(message: string): void {
 		if (!this.channel) {
@@ -75,21 +76,20 @@ class KDABQtTest {
 		}
 
 		for (let buildDir of buildDirs) {
-			let tests = new QtTests();
-			await tests.discoverViaCMake(buildDir);
-
+			this.qttests = new QtTests();
+			await this.qttests.discoverViaCMake(buildDir);
 
 			if (this.checkTestLinksToQtTestLib()) {
 				// Skip tests that don't link to QtTests
-				await tests.removeNonLinking();
+				await this.qttests.removeNonLinking();
 			}
 
-			if (tests.qtTestExecutables.length === 0) {
+			if (this.qttests.qtTestExecutables.length === 0) {
 				this.log("ERROR: discoverAllTestExecutables: No QtTest executables were found");
 				return;
 			}
 
-			for (var executable of tests.qtTestExecutables) {
+			for (var executable of this.qttests.qtTestExecutables) {
 				const item = controller.createTestItem(executable.id, executable.label);
 				item.canResolveChildren = true;
 				controller.items.add(item);
