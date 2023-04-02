@@ -77,6 +77,10 @@ class KDABQtTest {
 
 		for (let buildDir of buildDirs) {
 			this.qttests = new QtTests();
+			this.qttests.setLogFunction((message: string) => {
+				this.log(message);
+			});
+
 			await this.qttests.discoverViaCMake(buildDir);
 
 			if (this.checkTestLinksToQtTestLib()) {
