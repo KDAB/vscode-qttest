@@ -247,7 +247,7 @@ async function runHandler(
 				}
 
 				if (qtTestExecutable) {
-					updateStatusForSubTests(qtTestExecutable, run);
+					updateStatusForSubTests(qtTestExecutable, run, result);
 				}
 			}
 
@@ -259,14 +259,15 @@ async function runHandler(
 	run.end();
 }
 
-function updateStatusForSubTests(parentTest: QtTest, run: vscode.TestRun) {
+function updateStatusForSubTests(parentTest: QtTest, run: vscode.TestRun, success: boolean) {
 	if (!parentTest.slots) { return; }
 
 	for (var slot of parentTest.slots) {
 		if (slot.lastTestFailure) {
 			run.failed(slot.vscodeTestItem, new vscode.TestMessage("Test failed on line " + slot.lastTestFailure.lineNumber));
 		} else {
-			run.passed(slot.vscodeTestItem);
+			// It didn't fail, but we don't know if it passed. Unless the parent test passed as well.
+			if (success) { run.passed(slot.vscodeTestItem); }
 		}
 	}
 }
