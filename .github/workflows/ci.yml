@@ -16,8 +16,8 @@ jobs:
       matrix:
         os:
           - ubuntu-latest
-          # - windows-latest
-          # - macos-latest
+          - windows-latest
+          - macos-latest
     steps:
       - uses: actions/checkout@v4
       - name: Use Node.js 18.x
@@ -37,24 +37,3 @@ jobs:
 
       - name: vsce package
         run: vsce package
-
-      # - name: Install ninja-build tool
-      #   uses: turtlesec-no/get-ninja@main
-
-      # - name: Make sure MSVC is found when Ninja generator is in use
-      #   if: ${{ runner.os == 'Windows' }}
-      #   uses: ilammy/msvc-dev-cmd@v1
-
-      # - name: Install Qt 5
-      #   uses: jurplel/install-qt-action@v3
-      #   with:
-      #     version: 5.15.2
-      #     cache: true
-
-      # - name: Build Qt test
-      #   run: |
-      #     cmake --preset=dev -S test/qt_test/
-      #     cmake --build test/qt_test/build-dev/
-
-      # - name: Run test
-      #   run: node out/test.js
