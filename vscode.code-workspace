@@ -6,12 +6,13 @@
   ],
   "extensions": {
     "recommendations": [
-     ]
+      "dbaeumer.vscode-eslint"
+    ]
   },
   "settings": {
     "files.trimTrailingWhitespace": true,
     "editor.formatOnSave": true,
-     "files.insertFinalNewline": true,
+    "files.insertFinalNewline": true,
     "files.associations": {
       "*.code-workspace.template": "json"
     }
