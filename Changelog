@@ -2,7 +2,7 @@
 
 
 
-## [unreleased]
+## [0.3.0] - 2024-04-05
 
 ### ⚙️ Miscellaneous Tasks
 
@@ -10,6 +10,18 @@
 - Add cliff and pre-commit config files
 - Add a vscode workspace file
 - Add a dockerfile
+- Add a changelog
+- Install vsce in the docker container
+- Add a CONTRIBUTING.md file
+- Add github workflows
+- Fix typo in changelog
+- Update package-lock.json
+- Install vsce and use correct path
+- Update .vscodeignore
+- Move some devDependencies to dependencies
+- Prune before building package
+- Update CONTRIBUTING file
+- Bump version to 0.3.0
 
 ### Minor
 
