@@ -36,4 +36,4 @@ cargo install git-cliff
 - npm install && npm run compile && npm prune --production && vsce package
 - git tag -a v1.0.0 -m 'v1.0.0'
 - git push --tags
-- vsce publish
+- Go to   https://marketplace.visualstudio.com/manage/publishers/sergiokdab and upload the *.vsix file
