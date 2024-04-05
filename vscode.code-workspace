@@ -1,0 +1,19 @@
+{
+  "folders": [
+    {
+      "path": "."
+    }
+  ],
+  "extensions": {
+    "recommendations": [
+     ]
+  },
+  "settings": {
+    "files.trimTrailingWhitespace": true,
+    "editor.formatOnSave": true,
+     "files.insertFinalNewline": true,
+    "files.associations": {
+      "*.code-workspace.template": "json"
+    }
+  }
+}
