@@ -15,3 +15,5 @@ vscode.code-workspace
 .pre-commit-config.yaml
 .devcontainer/
 .github/
+src/test/suite/extension.test.ts
+.vscode-test.js
