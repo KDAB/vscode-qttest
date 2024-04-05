@@ -25,10 +25,12 @@ jobs:
         with:
           node-version: 18.x
       - name: Install dependencies
-        run: npm install --loglevel verbose
+        run: |
+          npm install --loglevel verbose
+          npm install @vscode/vsce
 
       - name: vsce package
-        run: vsce package
+        run: node_modules/.bin/vsce package
 
       # - name: Install ninja-build tool
       #   uses: turtlesec-no/get-ninja@main
