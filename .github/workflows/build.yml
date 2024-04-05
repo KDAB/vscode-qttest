@@ -2,7 +2,7 @@
 
 # CI that builds this vscode extension
 
-name: ci
+name: build
 
 on:
   pull_request:
