@@ -42,8 +42,7 @@
     "@iamsergio/qttest-utils": "0.4.9",
     "@types/node": "16.x",
     "@types/vscode": "^1.75.0",
-    "vscode-cmake-tools": "^1.0.0",
-    "@types/mocha": "^10.0.6"
+    "vscode-cmake-tools": "^1.0.0"
   },
   "extensionDependencies": [
     "ms-vscode.cmake-tools"
