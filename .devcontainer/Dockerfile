@@ -19,3 +19,8 @@ RUN apt install npm -y
 
 # Install tsc globally, for convenience
 RUN npm install typescript -g
+
+# These probably not needed, as project was already generated
+# RUN npm install yo generator-code -g
+
+RUN npm install @vscode/vsce -g
