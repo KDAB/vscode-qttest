@@ -4,6 +4,13 @@
 
 Just follow `.devcontainer/Dockerfile` to see what's needed.<br?>
 
+## Build
+
+```
+npm install
+vsce package
+code --install-extension qttest-0.3.0.vsix
+```
 
 ## Running tests
 
@@ -26,7 +33,7 @@ cargo install git-cliff
 - Increase version in package.json and package-lock.json.
 - git cliff --tag 1.0.0 > Changelog
 - git add Changelog package.json package-lock.json && git commit -m "chore: bump version"
-- npm run compile && npm prune --production && vsce package
+- npm install && npm run compile && npm prune --production && vsce package
 - git tag -a v1.0.0 -m 'v1.0.0'
 - git push --tags
 - vsce publish
