@@ -10,3 +10,8 @@ vsc-extension-quickstart.md
 **/*.ts
 out/test/**
 test/
+cliff.toml
+vscode.code-workspace
+.pre-commit-config.yaml
+.devcontainer/
+.github/
