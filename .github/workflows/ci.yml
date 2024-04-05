@@ -1,0 +1,52 @@
+# SPDX-License-Identifier: MIT
+
+# CI that builds this vscode extension
+
+name: ci
+
+on:
+  pull_request:
+  push:
+    branches: [master]
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os:
+          - ubuntu-latest
+          # - windows-latest
+          # - macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Use Node.js 18.x
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18.x
+      - name: Install dependencies
+        run: npm install --loglevel verbose
+
+      - name: vsce package
+        run: vsce package
+
+      # - name: Install ninja-build tool
+      #   uses: turtlesec-no/get-ninja@main
+
+      # - name: Make sure MSVC is found when Ninja generator is in use
+      #   if: ${{ runner.os == 'Windows' }}
+      #   uses: ilammy/msvc-dev-cmd@v1
+
+      # - name: Install Qt 5
+      #   uses: jurplel/install-qt-action@v3
+      #   with:
+      #     version: 5.15.2
+      #     cache: true
+
+      # - name: Build Qt test
+      #   run: |
+      #     cmake --preset=dev -S test/qt_test/
+      #     cmake --build test/qt_test/build-dev/
+
+      # - name: Run test
+      #   run: node out/test.js
