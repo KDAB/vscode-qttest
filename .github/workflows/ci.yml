@@ -27,10 +27,16 @@ jobs:
       - name: Install dependencies
         run: |
           npm install --loglevel verbose
-          npm install @vscode/vsce
+          npm install @vscode/vsce -g
+
+      - name: compile
+        run: npm run compile
+
+      - name: remove dev dependencies
+        run: npm prune --production
 
       - name: vsce package
-        run: node_modules/.bin/vsce package
+        run: vsce package
 
       # - name: Install ninja-build tool
       #   uses: turtlesec-no/get-ninja@main
