@@ -119,7 +119,7 @@ class KDABQtTest {
 		}
 
 		if (!testExecutable.slots) {
-			this.log("WARN: parseTestsInExecutable: Executable does not have any slots: " + testExecutable.filename)
+			this.log("WARN: parseTestsInExecutable: Executable does not have any slots: " + testExecutable.filename);
 			return;
 		}
 
