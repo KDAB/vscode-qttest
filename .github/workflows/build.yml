@@ -27,7 +27,7 @@ jobs:
       - name: Install dependencies
         run: |
           npm install --loglevel verbose
-          npm install @vscode/vsce -g
+          npm install @vscode/vsce typescript -g
 
       - name: compile
         run: npm run compile
