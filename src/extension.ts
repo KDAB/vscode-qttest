@@ -12,6 +12,11 @@ import qttest from "@iamsergio/qttest-utils";
 import { QtTest, QtTests, QtTestSlot } from '@iamsergio/qttest-utils/out/qttest';
 
 
+const DEBUGGER_MS_GDB = "ms-vscode.cpptools gdb";
+const DEBUGGER_MS_LLDB = "ms-vscode.cpptools lldb";
+const DEBUGGER_MS_MSVC = "ms-vscode.cpptools msvc";
+const DEBUGGER_CODELLDB = "CodeLLDB";
+
 /// A class, so we don't abuse with global variables and functions
 class KDABQtTest {
 	public channel: vscode.OutputChannel | undefined;
@@ -26,21 +31,22 @@ class KDABQtTest {
 		this.channel.appendLine(message);
 	};
 
+	/// If true, means we check if tests link to QtTestLib 
 	public checkTestLinksToQtTestLib(): boolean {
 		let conf = vscode.workspace.getConfiguration();
 		return conf.get("KDAB.QtTest.CheckTestLinksToQtTestLib") ?? false;
 	}
 
+	/// Unused for now. We require cmake.
 	public usesCMakeIntegration(): boolean {
-		// Unused for now. We require cmake.
 		let conf = vscode.workspace.getConfiguration();
 		return conf.get("KDAB.QtTest.useCMakeIntegration") ?? false;
 	}
 
 	public defaultDebuggerTypeForPlatform(): string {
-		if (os.platform() === "linux") { return "ms-vscode.cpptools gdb"; }
-		else if (os.platform() === "darwin") { return "ms-vscode.cpptools lldb"; }
-		else { return "ms-vscode.cpptools msvc"; }
+		if (os.platform() === "linux") { return DEBUGGER_MS_GDB; }
+		else if (os.platform() === "darwin") { return DEBUGGER_MS_LLDB; }
+		else { return DEBUGGER_MS_MSVC; }
 	}
 
 	public debuggerConf(): vscode.DebugConfiguration {
@@ -50,15 +56,15 @@ class KDABQtTest {
 
 		let dbgConf: vscode.DebugConfiguration = { name: "", "request": "launch", "type": "", "program": "", "args": [] };
 
-		if (option === "ms-vscode.cpptools msvc") {
+		if (option === DEBUGGER_MS_MSVC) {
 			dbgConf.type = "cppvsdbg";
-		} else if (option === "ms-vscode.cpptools lldb") {
+		} else if (option === DEBUGGER_MS_LLDB) {
 			dbgConf.type = "cppdbg";
 			dbgConf["MIMode"] = "lldb";
-		} else if (option === "ms-vscode.cpptools gdb") {
+		} else if (option === DEBUGGER_MS_GDB) {
 			dbgConf.type = "cppdbg";
 			dbgConf["MIMode"] = "gdb";
-		} else if (option === "CodeLLDB") {
+		} else if (option === DEBUGGER_CODELLDB) {
 			dbgConf.type = "lldb";
 		}
 
@@ -66,6 +72,8 @@ class KDABQtTest {
 	}
 
 	public async discoverAllTestExecutables(controller: vscode.TestController) {
+		this.log("INFO: discoverAllTestExecutables");
+
 		this.testMap = new WeakMap<vscode.TestItem, QtTest>();
 		this.individualTestMap = new WeakMap<vscode.TestItem, QtTestSlot>();
 
@@ -104,6 +112,7 @@ class KDABQtTest {
 	}
 
 	public async parseTestsInExecutable(item: vscode.TestItem, controller: vscode.TestController) {
+		this.log("INFO: parseTestsInExecutable");
 
 		let testExecutable: QtTest | undefined = this.testMap.get(item);
 		if (!testExecutable) {
@@ -123,6 +132,8 @@ class KDABQtTest {
 			return;
 		}
 
+		this.log("INFO: parseTestsInExecutable: Found " + testExecutable.slots.length + " slots in " + testExecutable.filename);
+
 		for (let slot of testExecutable.slots) {
 			const subitem = controller.createTestItem(slot.id, slot.name);
 			slot.vscodeTestItem = subitem;
@@ -132,7 +143,6 @@ class KDABQtTest {
 	}
 
 	public async cmakeBuildDirs(): Promise<string[]> {
-
 		const cmakeExt = vscode.extensions.getExtension("ms-vscode.cmake-tools");
 		if (!cmakeExt) {
 			this.log("ERROR: cmakeBuildDir: ms-vscode.cmake-tools extension is not installed");
@@ -166,10 +176,16 @@ class KDABQtTest {
 			}
 		}
 
+		for (var dir of buildDirs) {
+			this.log("INFO: cmakeBuildDirs: " + dir);
+		}
+
 		return buildDirs;
 	}
 
 	public async debugTest(name: string, executablePath: string, args: string[]): Promise<void> {
+		this.log("INFO: debugTest: name=" + name + " executablePath=" + executablePath + " args=" + args);
+
 		if (vscode.debug.activeDebugSession) {
 			this.log("INFO: debugTest: Debugger already running. Ignoring");
 			vscode.window.showWarningMessage("Debugger already running, ignoring");
@@ -183,7 +199,7 @@ class KDABQtTest {
 			debuggerConf.args = args;
 			let result = await vscode.debug.startDebugging(undefined, debuggerConf);
 			if (!result) {
-				this.log("Error running debugger. conf=" + JSON.stringify(debuggerConf));
+				this.log("ERROR: while running debugger. conf=" + JSON.stringify(debuggerConf));
 				resolve();
 				return;
 			}
@@ -204,6 +220,9 @@ async function runHandler(
 	controller: vscode.TestController) {
 	const run = controller.createTestRun(request);
 	const queue: vscode.TestItem[] = [];
+
+	// print log, with values of arguments
+	thisExtension.log("runHandler: shouldDebug=" + shouldDebug + "; request=" + request + "; token=" + token + "; controller=" + controller);
 
 	if (request.include) {
 		request.include.forEach(test => queue.push(test));
@@ -260,7 +279,10 @@ async function runHandler(
 }
 
 function updateStatusForSubTests(parentTest: QtTest, run: vscode.TestRun, success: boolean) {
-	if (!parentTest.slots) { return; }
+	if (!parentTest.slots) {
+		thisExtension.log("INFO: updateStatusForSubTests: parentTest.slots is empty. Skipping");
+		return;
+	}
 
 	for (var slot of parentTest.slots) {
 		if (slot.lastTestFailure) {
