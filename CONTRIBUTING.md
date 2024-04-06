@@ -14,7 +14,9 @@ code --install-extension qttest-0.3.0.vsix
 
 ## Running tests
 
-TODO
+In the docker, run `run_manual_test.sh` which will build the Qt project, the vscode extension
+and open vscode. It should show the test slots in the test explorer.<br>
+Or just run the script locally.
 
 
 ## Install git-cliff
