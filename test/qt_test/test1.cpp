@@ -8,9 +8,9 @@
 class MyTest : public QObject {
   Q_OBJECT
 private Q_SLOTS:
-  void test1() {}
-  void test2() {}
-  void test3() {}
+  void slotA() {}
+  void slotB() {}
+  void slotC() {}
 };
 
 QTEST_MAIN(MyTest);

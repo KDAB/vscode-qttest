@@ -8,9 +8,9 @@
 class MyTest : public QObject {
   Q_OBJECT
 private Q_SLOTS:
-  void test1() {}
-  void test2() {}
-  void testShouldFail() { QFAIL("failed"); }
+  void slotC() {}
+  void slotD() {}
+  void slotFail() { QFAIL("failed"); }
 };
 
 QTEST_MAIN(MyTest);
