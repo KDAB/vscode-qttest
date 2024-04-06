@@ -71,6 +71,21 @@ class KDABQtTest {
 		return dbgConf;
 	}
 
+	public async clearAllTests(controller: vscode.TestController) {
+		this.log("INFO: clearAllTests");
+
+		controller.items.forEach(item => {
+			controller.items.delete(item.id);
+		});
+	}
+
+	public async refreshTests(controller: vscode.TestController) {
+		this.log("INFO: refreshTests");
+
+		await this.clearAllTests(controller);
+		await this.discoverAllTestExecutables(controller);
+	}
+
 	public async discoverAllTestExecutables(controller: vscode.TestController) {
 		this.log("INFO: discoverAllTestExecutables");
 
@@ -102,6 +117,8 @@ class KDABQtTest {
 			}
 
 			for (var executable of this.qttests.qtTestExecutables) {
+				this.log("INFO: discoverAllTestExecutables: Found: " + executable.filename);
+
 				const item = controller.createTestItem(executable.id, executable.label);
 				item.canResolveChildren = true;
 				controller.items.add(item);
@@ -298,6 +315,13 @@ export function activate(context: vscode.ExtensionContext) {
 	thisExtension.log("activated!");
 
 	const controller = vscode.tests.createTestController('kdab.qttest', 'Qt');
+
+	// Called when user presses the refresh tests button
+	controller.refreshHandler = async () => {
+		thisExtension.log("INFO: refreshHandler");
+		await thisExtension.refreshTests(controller);
+	}
+
 	context.subscriptions.push(controller);
 
 	controller.resolveHandler = async test => {
@@ -323,7 +347,6 @@ export function activate(context: vscode.ExtensionContext) {
 			runHandler(true, request, token, controller);
 		}
 	);
-
 }
 
 export function deactivate() { }
