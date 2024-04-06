@@ -2,6 +2,32 @@
 
 
 
+## [0.4.0] - 2024-04-06
+
+### 🧪 Testing
+
+- Add integration tests
+- Remove integration tests
+- Add a test script
+
+### ⚙️ Miscellaneous Tasks
+
+- Update CONTRIBUTING file
+- Add test-cli as dev dependency
+- Fix an eslint warning
+- Enable for macos and windows as well
+- Add eslint as vscode recommendation
+- Rename ci.yml to build.yml
+- Update .vscodeignore
+- Add mocha types as dependency
+- Try to fix macOS build
+- Update to node v18
+- Run npm update
+- Update CONTRIBUTING.md
+- Update package versions
+- Update CONTRIBUTING.md
+- Update Dockerfile
+
 ## [0.3.0] - 2024-04-05
 
 ### ⚙️ Miscellaneous Tasks
@@ -22,6 +48,8 @@
 - Prune before building package
 - Update CONTRIBUTING file
 - Bump version to 0.3.0
+- Update changelog
+- Update CONTRIBUTING file
 
 ### Minor
 
