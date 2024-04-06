@@ -28,17 +28,18 @@ cargo install git-cliff
 ## Releasing
 
 (Replace 1.0.0 with actual version used)
+export NEW_VERSION=1.0.0
 
-- run `npm update` to update packages in package-lock.json
-- run `npm outdated` and maybe bump more packages in package.json
+- Optional: run `npm update` to update packages in package-lock.json. Not needed for every release.
+- Optional: `npm outdated` and maybe bump more packages in package.json. Not needed for every release.
 - run `run_manual_test.sh` and do some manual testing
 - Run `vsce ls` and see if unneeded junk isn't being packaged
 - Make sure Github Actions CI is green
 - Optional: To get a version compatible with semver, run `git cliff --bump`
 - Increase version in package.json and package-lock.json.
-- git cliff --tag 1.0.0 > Changelog
+- git cliff --tag ${NEW_VERSION} > Changelog
 - git add Changelog package.json package-lock.json && git commit -m "chore: bump version"
 - npm install && npm run compile && npm prune --production && vsce package
-- git tag -a v1.0.0 -m 'v1.0.0'
+- git tag -a v${NEW_VERSION} -m "v${NEW_VERSION}"
 - git push --tags
-- Go to   https://marketplace.visualstudio.com/manage/publishers/sergiokdab and upload the *.vsix file
+- Go to https://marketplace.visualstudio.com/manage/publishers/sergiokdab and upload the *.vsix file

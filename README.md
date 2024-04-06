@@ -21,7 +21,8 @@ Either way, we've moved the bulk of this extension's code into a separate [nodej
 
 ## Troubleshooting
 
-In the output pane, chose `KDAB-QtTest` and see if there are any errors.
+In the output pane, chose `KDAB-QtTest` and see if there are any errors.<br>
+Before reporting a bug, clear the output pane, reproduce the bug, and copy all output, paste it in the bug report.
 
 ## About KDAB
 

@@ -2,6 +2,21 @@
 
 
 
+## [1.0.0] - 2024-04-06
+
+### 🐛 Bug Fixes
+
+- Handle user pressing the refresh button
+
+### 🧪 Testing
+
+- Don't hardcode version number
+- Rename the slot names to slot*
+
+### ⚙️ Miscellaneous Tasks
+
+- Add logging
+
 ## [0.4.0] - 2024-04-06
 
 ### 🧪 Testing
@@ -27,6 +42,7 @@
 - Update package versions
 - Update CONTRIBUTING.md
 - Update Dockerfile
+- Bump version
 
 ## [0.3.0] - 2024-04-05
 
@@ -64,7 +80,7 @@
 
 ### 🧪 Testing
 
-- Actually call add_test() so ctest works
+- Actully call add_test() so ctest works
 
 ### README
 
