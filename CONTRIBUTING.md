@@ -30,6 +30,7 @@ cargo install git-cliff
 (Replace 1.0.0 with actual version used)
 
 - Make sure Github Actions CI is green
+- run `npm update` to update packages in package-lock.json
 - Run `vsce ls` and see if unneeded junk isn't being packaged
 - Optional: To get a version compatible with semver, run `git cliff --bump`
 - Increase version in package.json and package-lock.json.
