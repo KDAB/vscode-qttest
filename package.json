@@ -55,7 +55,7 @@
       "properties": {
         "KDAB.QtTest.CheckTestLinksToQtTestLib": {
           "type": "boolean",
-          "default": true,
+          "default": false,
           "description": "Calls ldd on the test executable to make sure it's a QtTest. Only implemented on Linux. Use if you also have non-Qt tests."
         },
         "KDAB.QtTest.debugger": {
