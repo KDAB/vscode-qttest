@@ -23,6 +23,10 @@ class KDABQtTest {
 	public testMap = new WeakMap<vscode.TestItem, QtTest>();
 	public individualTestMap = new WeakMap<vscode.TestItem, QtTestSlot>();
 	public qttests: QtTests | undefined;
+	public watcher: vscode.FileSystemWatcher | undefined;
+
+	// add a map, which as key the executable file name and value a file system watcher
+	watcherMap = new Map<string, vscode.FileSystemWatcher>();
 
 	public log(message: string): void {
 		if (!this.channel) {
@@ -77,6 +81,12 @@ class KDABQtTest {
 		controller.items.forEach(item => {
 			controller.items.delete(item.id);
 		});
+
+		for (let watcher of this.watcherMap.values()) {
+			watcher.dispose();
+		}
+
+		this.watcherMap.clear();
 	}
 
 	public async refreshTests(controller: vscode.TestController) {
@@ -122,13 +132,27 @@ class KDABQtTest {
 			for (var executable of this.qttests.qtTestExecutables) {
 				this.log("INFO: discoverAllTestExecutables: Found: " + executable.filename);
 
-				const item = controller.createTestItem(executable.id, executable.label);
-				item.canResolveChildren = true;
-				controller.items.add(item);
-				executable.vscodeTestItem = item;
-				this.testMap.set(item, executable);
+				this.addTestExecutable(executable, controller);
 			}
 		}
+	}
+
+	/// Adds a test executable, it will appear in the vscode test explorer
+	addTestExecutable(executable: QtTest, controller: vscode.TestController) {
+		this.log("INFO: addTestExecutable: " + executable.filename);
+		const item = controller.createTestItem(executable.id, executable.label);
+		item.canResolveChildren = true;
+		controller.items.add(item);
+		executable.vscodeTestItem = item;
+		this.testMap.set(item, executable);
+
+		let watcher = vscode.workspace.createFileSystemWatcher(executable.filename);
+		this.watcherMap.set(executable.filename, watcher);
+
+		watcher.onDidChange((e: vscode.Uri) => {
+			this.log("INFO: File changed: " + e.fsPath);
+			this.parseTestsInExecutable(item, controller);
+		});
 	}
 
 	public async parseTestsInExecutable(item: vscode.TestItem, controller: vscode.TestController) {
@@ -153,6 +177,10 @@ class KDABQtTest {
 		}
 
 		this.log("INFO: parseTestsInExecutable: Found " + testExecutable.slots.length + " slots in " + testExecutable.filename);
+
+		item.children.forEach(child => {
+			item.children.delete(child.id);
+		});
 
 		for (let slot of testExecutable.slots) {
 			const subitem = controller.createTestItem(slot.id, slot.name);
