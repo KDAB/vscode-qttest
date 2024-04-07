@@ -105,9 +105,12 @@ class KDABQtTest {
 			});
 
 			await this.qttests.discoverViaCMake(buildDir);
+			this.log("INFO: discoverAllTestExecutables: Found " + this.qttests.qtTestExecutables.length + " executables in " + buildDir);
 
 			if (this.checkTestLinksToQtTestLib()) {
 				// Skip tests that don't link to QtTests
+				this.log("INFO: discoverAllTestExecutables: Removing non-Qt tests, if any");
+
 				await this.qttests.removeNonLinking();
 			}
 
