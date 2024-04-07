@@ -1,5 +1,9 @@
 
 QT_BUILD_DIR=test/qt_test/build-dev/
+VSCODE_DATA=test/qt_test/build-dev/vscode/
+
+# Alias for debugging purposes, when needed
+alias code_clean="code --user-data-dir $VSCODE_DATA --extensions-dir $VSCODE_DATA"
 
 rm *vsix &> /dev/null
 rm -rf BUILD_DIR &> /dev/null
