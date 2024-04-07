@@ -18,11 +18,12 @@ We might try to contribute QtTest support to [C++ TestMate](https://marketplace.
 <br>
 Either way, we've moved the bulk of this extension's code into a separate [nodejs module](https://www.npmjs.com/package/@iamsergio/qttest-utils). That module is reusable and exposes API ready to be used by other test extensions easily.
 
-
 ## Troubleshooting
 
 In the output pane, chose `KDAB-QtTest` and see if there are any errors.<br>
 Before reporting a bug, clear the output pane, reproduce the bug, and copy all output, paste it in the bug report.
+
+Try pressing the reload button if list of tests seem stale.
 
 ## About KDAB
 
