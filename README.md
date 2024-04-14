@@ -25,6 +25,9 @@ Before reporting a bug, clear the output pane, reproduce the bug, and copy all o
 
 Try pressing the reload button if list of tests seem stale.
 
+If no tests are reported, try running `ctest -N` inside the build directory. If that doesn't work either then it's a cmake problem.
+Either there's really no tests added with `add_test()` or the `enable_testing()` call is missing in the root `CMakeLists.txt`.
+
 ## About KDAB
 
 This extension is supported and maintained by Klarälvdalens Datakonsult AB (KDAB).

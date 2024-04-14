@@ -72,6 +72,7 @@ class KDABQtTest {
 			dbgConf.type = "lldb";
 		}
 
+		this.log("INFO: debuggerConf: Using debugger conf: " + dbgConf + "; option=" + option);
 		return dbgConf;
 	}
 
