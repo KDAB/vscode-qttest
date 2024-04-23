@@ -14,4 +14,4 @@ cmake --build $QT_BUILD_DIR/ && \
 code --install-extension qttest-*.vsix \
      --install-extension ms-vscode.cmake-tools \
      --install-extension vadimcn.vscode-lldb && \
-code test/qt_test/vscode.code-workspace
+code test/qt_test/vscode.code-workspace --crash-reporter-directory /tmp/
