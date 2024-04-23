@@ -62,10 +62,73 @@ class KDABQtTest {
 		else { return DEBUGGER_MS_MSVC; }
 	}
 
-	public debuggerConf(): vscode.DebugConfiguration {
+	/// Asks the user to pick a launch from a picker
+	public async pickDebuggerConfFromLaunch(): Promise<vscode.DebugConfiguration | undefined> {
+
+		try {
+			let launches = this.launchConfigs();
+			if (launches.length === 0) {
+				this.log("ERROR: pickDebuggerConfFromLaunch: No launch configurations found");
+				return undefined;
+			}
+
+			// create an array of strings, each with a launch configuration name
+			let launchNames = launches.map(l => l.name);
+			let result = await vscode.window.showQuickPick(launchNames, { placeHolder: "Select debugger" });
+
+			if (!result) {
+				this.log("INFO: pickDebuggerConfFromLaunch: User cancelled");
+				return undefined;
+			}
+
+			let index = launchNames.indexOf(result);
+			if (index === -1) {
+				this.log("ERROR: pickDebuggerConfFromLaunch: Failed to find index");
+				return undefined;
+			}
+
+			this.log("INFO: pickDebuggerConfFromLaunch: User selected: " + JSON.stringify(launches[index]));
+
+			return launches[index];
+		} catch (e: any) {
+			this.log("ERROR: pickDebuggerConfFromLaunch: " + e.message);
+			return undefined;
+		}
+	}
+
+	/// Returns the users launch configurations
+	public launchConfigs(): vscode.DebugConfiguration[] {
+		let launches: vscode.DebugConfiguration[] = [];
+
+		if (vscode.workspace.workspaceFolders) {
+			const config = vscode.workspace.getConfiguration(
+				'launch',
+				vscode.workspace.workspaceFolders[0].uri
+			);
+
+			const values = config.get('configurations');
+			if (values instanceof Array) {
+				launches = values;
+			}
+		}
+
+		return launches;
+	}
+
+	public async debuggerConf(): Promise<vscode.DebugConfiguration> {
 		let conf = vscode.workspace.getConfiguration();
 		var option = conf.get<string>("KDAB.QtTest.debugger");
 		if (!option || option === "default") { option = this.defaultDebuggerTypeForPlatform(); }
+
+		if (option == "Existing Launch") {
+			let launch = await this.pickDebuggerConfFromLaunch();
+			if (launch) {
+				return launch;
+			} else {
+				thisExtension.log("ERROR: debuggerConf: Failed to get debugger conf from launch, defaulting.");
+				option = this.defaultDebuggerTypeForPlatform();
+			}
+		}
 
 		let dbgConf: vscode.DebugConfiguration = { name: "", "request": "launch", "type": "", "program": "", "args": [] };
 
@@ -253,7 +316,7 @@ class KDABQtTest {
 		}
 
 		return await new Promise(async (resolve, reject) => {
-			let debuggerConf = this.debuggerConf();
+			let debuggerConf = await this.debuggerConf();
 			debuggerConf.name = name;
 			debuggerConf.program = executablePath;
 			debuggerConf.args = args;

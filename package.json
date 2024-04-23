@@ -65,14 +65,16 @@
             "ms-vscode.cpptools lldb",
             "ms-vscode.cpptools msvc",
             "ms-vscode.cpptools gdb",
-            "CodeLLDB"
+            "CodeLLDB",
+            "Existing Launch"
           ],
           "enumDescriptions": [
             "Defaults to VS on Windows, gdb on Linux and LLDB on macOS",
             "LLDB via Microsoft C++ extension",
             "VS debugger via Microsoft C++ extension",
             "GDB via Microsoft C++ extension",
-            "LLDB debugger via CodeLLDB extension"
+            "LLDB debugger via CodeLLDB extension",
+            "Use an existing launch configuration"
           ],
           "default": "default",
           "description": "Which debugger to use"
