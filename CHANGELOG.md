@@ -2,6 +2,16 @@
 
 
 
+## [1.3.0] - 2024-04-23
+
+### 🚀 Features
+
+- Allow to reuse existing launches when debugging
+
+### 📚 Documentation
+
+- Add a Settings section to README
+
 ## [1.2.0] - 2024-04-23
 
 ### 🚀 Features
