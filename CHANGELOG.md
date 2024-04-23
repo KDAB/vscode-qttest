@@ -2,6 +2,17 @@
 
 
 
+## [1.2.0] - 2024-04-23
+
+### 🚀 Features
+
+- Added right-click -> context menu -> debug slot
+
+### 📚 Documentation
+
+- Minor improvement
+- Explain that ctest needs to report tests
+
 ## [1.1.0] - 2024-04-07
 
 ### 🚀 Features
