@@ -17,10 +17,13 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 ## Installs node 18v
 RUN apt update -qq && apt install build-essential software-properties-common lld git \
     cmake ninja-build nodejs qtbase5-dev qt5-qmake libnss3-dev wget gdebi-core libdbus-glib-1-2 \
-    libssl-dev openssl npm libasound2-dev -y
+    libssl-dev openssl npm libasound2-dev curl -y
 
 # Install tsc globally, for convenience
 RUN npm install typescript -g
+
+# Useful to symbolize minidumps in case vscode crashes
+RUN npm install electron-minidump -g
 
 RUN npm install @vscode/vsce -g
 
