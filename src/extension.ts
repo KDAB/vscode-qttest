@@ -35,10 +35,19 @@ class KDABQtTest {
 		this.channel.appendLine(message);
 	};
 
-	/// If true, means we check if tests link to QtTestLib 
+	/// If true, means we check if tests link to QtTestLib
 	public checkTestLinksToQtTestLib(): boolean {
 		let conf = vscode.workspace.getConfiguration();
 		return conf.get("KDAB.QtTest.CheckTestLinksToQtTestLib") ?? false;
+	}
+
+	/// returns whether executables exist
+	public hasExecutables(): boolean {
+		if (!this.qttests) {
+			return false;
+		}
+
+		return this.qttests.qtTestExecutables.length > 0;
 	}
 
 	/// Unused for now. We require cmake.
@@ -154,6 +163,8 @@ class KDABQtTest {
 			this.log("INFO: File changed: " + e.fsPath);
 			this.parseTestsInExecutable(item, controller);
 		});
+
+		this.parseTestsInExecutable(item, controller);
 	}
 
 	public async parseTestsInExecutable(item: vscode.TestItem, controller: vscode.TestController) {
@@ -379,6 +390,62 @@ export function activate(context: vscode.ExtensionContext) {
 			runHandler(true, request, token, controller);
 		}
 	);
+
+	// register a command, triggered on context menu:
+	context.subscriptions.push(vscode.commands.registerCommand('sergiokdab.qttest.debugTest', async () => {
+
+		// get the text currently selected:
+		let editor = vscode.window.activeTextEditor;
+		if (!editor) {
+			thisExtension.log("INFO: No editor found.");
+			return;
+		}
+
+		let selection = editor.selection;
+
+		let text = editor.document.getText(selection).trim();
+
+		if (text.endsWith("()")) {
+			// trim trailing "()"
+			text = text.slice(0, -2);
+		}
+
+		thisExtension.log("INFO: Selected text: " + text);
+
+		if (!thisExtension.hasExecutables()) {
+			// Probably the 1st load wasn't run yet.
+			thisExtension.log("INFO: Refreshing tests");
+			await vscode.commands.executeCommand("testing.refreshTests");
+			thisExtension.log("INFO: Refreshed tests.");
+		}
+
+		let executables = thisExtension.qttests?.executablesContainingSlot(text);
+
+		if (!executables || executables.length === 0) {
+			vscode.window.showWarningMessage("No executables found for selection");
+			thisExtension.log("INFO: No executables found for selection: " + text);
+			return;
+		}
+
+		if (executables.length > 1) {
+			vscode.window.showWarningMessage("More than one executable contains the slot, please run explicitly from the text explorer.");
+			thisExtension.log("INFO: More than one executable contains the slot");
+			return;
+		}
+
+		// start debug session:
+		let executable = executables[0];
+		let slot = executable.slotByName(text);
+		if (!slot) {
+			vscode.window.showWarningMessage("Slot not found in executable");
+			thisExtension.log("INFO: Slot not found in executable");
+			return;
+		}
+
+		thisExtension.log("INFO: Running slot: " + slot.name);
+		let command = slot.command();
+		await thisExtension.debugTest(command.label, command.executablePath, command.args);
+	}));
 }
 
 export function deactivate() { }

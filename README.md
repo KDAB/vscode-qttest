@@ -11,6 +11,7 @@ the build directory and `ctest` is invoked to list the available tests, which we
 ## Features
 - Listing and running Qt tests
 - Listing and running individual QTest test slots
+- Context-menu entry to run selected slot in the text editor
 
 ## Future plans
 
