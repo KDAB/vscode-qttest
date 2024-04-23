@@ -13,6 +13,13 @@ the build directory and `ctest` is invoked to list the available tests, which we
 - Listing and running individual QTest test slots
 - Context-menu entry to run selected slot in the text editor
 
+## Settings
+
+- `KDAB.QtTest.debugger` By default the extension will try to guess what's the best debugger. But you can and probably should explicitly chose which debugger to use. The best setting might be `Existing Launch`, which will use an existing launch config, this way you can reuse your source maps, pretty printers and launch env variables.
+
+- `KDAB.QtTest.CheckTestLinksToQtTestLib` Only available on Linux. Turn it on in case you have non-Qt tests executables that
+you want to exclude from the list. Patches accepted for Windows and macOS support.
+
 ## Future plans
 
 We might try to contribute QtTest support to [C++ TestMate](https://marketplace.visualstudio.com/items?itemName=matepek.vscode-catch2-test-adapter), however, I think it's also fine to keep it as a separate extension, as most of the code is already provided by VSCode, there wouldn't be any code savings by integrating it.
