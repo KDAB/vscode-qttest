@@ -10,6 +10,7 @@ import * as os from 'os';
 import { CMakeToolsApi, Version, getCMakeToolsApi, UIElement } from 'vscode-cmake-tools';
 import qttest from "@iamsergio/qttest-utils";
 import { QtTest, QtTests, QtTestSlot } from '@iamsergio/qttest-utils/out/qttest';
+import { CMakeTests } from '@iamsergio/qttest-utils/out/cmake';
 
 
 const DEBUGGER_MS_GDB = "ms-vscode.cpptools gdb";
@@ -204,16 +205,65 @@ class KDABQtTest {
 
 			for (var executable of this.qttests.qtTestExecutables) {
 				this.log("INFO: discoverAllTestExecutables: Found: " + executable.filename);
-
-				this.addTestExecutable(executable, controller);
+				await this.addTestExecutable(executable, controller);
 			}
 		}
 	}
 
+	/// Returns the .cpp file that corresponds to the executable
+	async cppFileForExecutable(executableFileName: string): Promise<string | undefined> {
+
+		let candidates: string[] = [];
+		let api = await getCMakeToolsApi(Version.latest);
+		if (!api) {
+			this.log("ERROR: cppFileForExecutable: Could not access cmake api");
+			return undefined;
+		}
+
+		// iterate workspace folders:
+		for (let folder of vscode.workspace.workspaceFolders ?? []) {
+			let workspaceUri = folder.uri;
+			if (!workspaceUri) continue;
+
+			let proj = await api.getProject(workspaceUri);
+			if (!proj) {
+				this.log("WARN: cppFileForExecutable: No CMake project is open. Maybe run configure first.");
+				continue;
+			}
+
+			let model = proj.codeModel;
+			if (!model) continue;
+
+			let builddir = await proj.getBuildDirectory();
+			if (!builddir) continue;
+
+			let cmake = new CMakeTests(builddir);
+			model.configurations.forEach((conf) => {
+				cmake.cppFilesForExecutable(executableFileName, conf).forEach((cppFile) => {
+					candidates.push(cppFile);
+				});
+			});
+		}
+
+		this.log("INFO: candidates=" + candidates + "; for executable=" + executableFileName);
+
+		if (candidates.length === 0) {
+			return undefined;
+		} else if (candidates.length === 1) {
+			return candidates[0];
+		} else {
+			return candidates[0];
+		}
+	}
+
 	/// Adds a test executable, it will appear in the vscode test explorer
-	addTestExecutable(executable: QtTest, controller: vscode.TestController) {
-		this.log("INFO: addTestExecutable: " + executable.filename);
-		const item = controller.createTestItem(executable.id, executable.label);
+	async addTestExecutable(executable: QtTest, controller: vscode.TestController) {
+		let cppFile = await this.cppFileForExecutable(executable.filename);
+		let uri = cppFile ? vscode.Uri.file(cppFile) : undefined;
+
+		this.log("INFO: addTestExecutable: " + executable.filename + "; cppFile=" + cppFile);
+
+		const item = controller.createTestItem(executable.id, executable.label, uri);
 		item.canResolveChildren = true;
 		controller.items.add(item);
 		executable.vscodeTestItem = item;
@@ -283,7 +333,6 @@ class KDABQtTest {
 			this.log("ERROR: cmakeBuildDir: No workspace folders are open");
 			return [];
 		}
-
 
 		let buildDirs: string[] = [];
 		for (var folder of folders) {
@@ -478,6 +527,7 @@ export function activate(context: vscode.ExtensionContext) {
 			runHandler(true, request, token, controller);
 		}
 	);
+
 
 	// register a command, triggered on context menu:
 	context.subscriptions.push(vscode.commands.registerCommand('sergiokdab.qttest.debugTest', async () => {
