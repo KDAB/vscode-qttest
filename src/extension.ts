@@ -372,7 +372,7 @@ async function runHandler(
 		let command: string[] = [];
 
 		const start = Date.now();
-		run.appendOutput(`Running ${test.id}\n`);
+		run.appendOutput(`Running ${test.id}\r\n`);
 		run.started(test);
 		try {
 			let result = false;
@@ -380,6 +380,31 @@ async function runHandler(
 				let command = ourRunnable.command();
 				await thisExtension.debugTest(command.label, command.executablePath, command.args);
 			} else {
+
+				// create a small function, that receives run, and appends output:
+
+				const appendOutput = (run: vscode.TestRun, message: string) => {
+					const outputFunc = (message: string) => {
+						run.appendOutput(message.trim());
+					};
+
+					// vscode "Test Result" pane doesn't support LF, only CRLF. See run.appendOutput() docs
+					let lines = message.split("\n");
+					for (let line of lines) {
+						run.appendOutput(line.trim() + "\r\n");
+					}
+				};
+
+				if (qtTestExecutable) {
+					qtTestExecutable.outputFunc = (message: string) => {
+						appendOutput(run, message);
+					}
+				} else if (singleTestSlot) {
+					singleTestSlot.parentQTest.outputFunc = (message: string) => {
+						appendOutput(run, message);
+					}
+				}
+
 				result = await ourRunnable.runTest();
 
 				if (result) {
