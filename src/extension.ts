@@ -308,7 +308,10 @@ class KDABQtTest {
 		});
 
 		for (let slot of testExecutable.slots) {
-			const subitem = controller.createTestItem(slot.id, slot.name);
+			/// We just use the same URI as the parent, as vscode doesn't support line:column in urls
+			let slotUri = testExecutable.vscodeTestItem.uri;
+
+			const subitem = controller.createTestItem(slot.id, slot.name, slotUri);
 			slot.vscodeTestItem = subitem;
 			item.children.add(subitem);
 			this.individualTestMap.set(subitem, slot);
