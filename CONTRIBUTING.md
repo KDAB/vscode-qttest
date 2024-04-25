@@ -37,8 +37,7 @@ export NEW_VERSION=1.0.0
 - Make sure Github Actions CI is green
 - Optional: To get a version compatible with semver, run `git cliff --bump`
 - Increase version in package.json and package-lock.json.
-- git cliff --tag ${NEW_VERSION} > CHANGELOG.md
-- git add CHANGELOG.md package.json package-lock.json && git commit -m "chore: bump version"
+- git cliff --tag ${NEW_VERSION} > CHANGELOG.md && git add CHANGELOG.md package.json package-lock.json && git commit -m "chore: bump version"
 - npm install && npm run compile && npm prune --production && vsce package
 - git tag -a v${NEW_VERSION} -m "v${NEW_VERSION}" && git push && git push --tags
 - Go to https://marketplace.visualstudio.com/manage/publishers/sergiokdab and upload the *.vsix file
