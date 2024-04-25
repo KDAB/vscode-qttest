@@ -116,6 +116,42 @@ class KDABQtTest {
 		return launches;
 	}
 
+	/// Returns true if all is ok, false if the user was warned due to missing debugger.
+	public maybeWarnOfMissingDebugger(type: string): boolean {
+		let extensionId = this.extensionIdForDebuggerType(type);
+		let ext = vscode.extensions.getExtension(extensionId);
+		if (!ext) {
+			let msg = "You chose debugger type \"" + type + "\", but the extension " + extensionId + " is not installed."
+			"Please install it or chose a different debugger.";
+
+			let detail = "Popular debuggers are ms-vscode.cpptools and vadimcn.vscode-lldb (CodeLLDB). Set KDAB.QtTest.debugger setting accordingly. You can also set it to \"Existing Launch\" and pick a launch configuration as template.";
+
+			this.log("ERROR: maybeWarnOfMissingDebugger" + msg);
+			vscode.window.showErrorMessage(msg, { modal: true, detail: detail }, "Open settings").then((value) => {
+				if (value === "Open settings") {
+					vscode.commands.executeCommand("workbench.action.openSettings", "KDAB.QtTest.debugger");
+				} else {
+					this.log("INFO: maybeWarnOfMissingDebugger: User cancelled");
+				}
+			});
+
+			return false;
+		}
+
+		return true;
+	}
+
+	/// Returns the extension id for the specified debugger type
+	public extensionIdForDebuggerType(type: string): string {
+		if (type === "cppvsdbg" || type === "cppdbg") {
+			return "ms-vscode.cpptools";
+		} else if (type === "lldb") {
+			return "vadimcn.vscode-lldb";
+		}
+
+		return "";
+	}
+
 	public async debuggerConf(): Promise<vscode.DebugConfiguration> {
 		let conf = vscode.workspace.getConfiguration();
 		var option = conf.get<string>("KDAB.QtTest.debugger");
@@ -369,6 +405,13 @@ class KDABQtTest {
 
 		return await new Promise(async (resolve, reject) => {
 			let debuggerConf = await this.debuggerConf();
+
+			if (!this.maybeWarnOfMissingDebugger(debuggerConf.type)) {
+				this.log("ERROR: debugTest: Bailing out, missing debugger extension");
+				resolve();
+				return;
+			}
+
 			debuggerConf.name = name;
 			debuggerConf.program = executablePath;
 			debuggerConf.args = args;
