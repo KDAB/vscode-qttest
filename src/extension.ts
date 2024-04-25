@@ -7,7 +7,7 @@ import * as path from 'path';
 import * as fs from 'fs';
 import { spawn } from 'child_process';
 import * as os from 'os';
-import { CMakeToolsApi, Version, getCMakeToolsApi, UIElement } from 'vscode-cmake-tools';
+import { CMakeToolsApi, Version, getCMakeToolsApi, UIElement, Project } from 'vscode-cmake-tools';
 import qttest from "@iamsergio/qttest-utils";
 import { QtTest, QtTests, QtTestSlot } from '@iamsergio/qttest-utils/out/qttest';
 import { CMakeTests } from '@iamsergio/qttest-utils/out/cmake';
@@ -25,6 +25,9 @@ class KDABQtTest {
 	public individualTestMap = new WeakMap<vscode.TestItem, QtTestSlot>();
 	public qttests: QtTests | undefined;
 	public watcher: vscode.FileSystemWatcher | undefined;
+
+	/// List of build-directories we rebuilt before running tests in
+	public currentDoneRebuilds: Set<string> = new Set();;
 
 	// add a map, which as key the executable file name and value a file system watcher
 	watcherMap = new Map<string, vscode.FileSystemWatcher>();
@@ -114,6 +117,49 @@ class KDABQtTest {
 		}
 
 		return launches;
+	}
+	/// Maybe rebuilds
+	/// Called before running tests.
+	/// Returns true on success
+	public async maybeRebuild(executableFileName: string): Promise<boolean> {
+		try {
+			let projects = await this.projectsForExecutable(executableFileName);
+			if (!projects || projects.length === 0) {
+				this.log("ERROR: maybeRebuild: Failed to get projects for executable: " + executableFileName);
+				return false;
+			}
+
+			let cmake = new CMakeTests(/*dummy*/"");
+
+			/// Can't see why there would be more than 1 project for the same executable
+			/// we support it, but won't happen	in practice
+			for (let project of projects) {
+				let conf = project.codeModel?.configurations[0];
+				if (!conf) continue;
+
+				let buildDir = await project.getBuildDirectory();
+				if (!buildDir) continue;
+
+				// When running a group of slots, be sure to not build the same build dir twice
+				if (this.currentDoneRebuilds.has(buildDir))
+					continue;
+
+				let targetName = cmake.targetNameForExecutable(executableFileName, conf);
+				if (targetName) {
+					this.log("INFO: maybeRebuild: Rebuilding target: " + targetName);
+					await project.build([targetName]);
+					this.currentDoneRebuilds.add(buildDir);
+				} else {
+					this.log("ERROR: maybeRebuild: Failed to get target name for executable: " + executableFileName + "; codemodel was:\n"
+						+ JSON.stringify(project.codeModel, null, 2));
+				}
+			}
+
+			return true;
+		} catch (e: any) {
+			this.log("ERROR: maybeRebuild: " + e.message);
+			return false;
+		}
 	}
 
 	/// Returns true if all is ok, false if the user was warned due to missing debugger.
@@ -244,6 +290,50 @@ class KDABQtTest {
 				await this.addTestExecutable(executable, controller);
 			}
 		}
+	}
+
+	/// Returns the projects that contains the executable
+	/// Usually only 1
+	async projectsForExecutable(executableFileName: string): Promise<Project[] | undefined> {
+		let api = await getCMakeToolsApi(Version.latest);
+		if (!api) {
+			this.log("ERROR: projectsForExecutable: Could not access cmake api");
+			return undefined;
+		}
+
+		let projects: Project[] = [];
+
+		for (let folder of vscode.workspace.workspaceFolders ?? []) {
+			let workspaceUri = folder.uri;
+			if (!workspaceUri) continue;
+
+			let proj = await api.getProject(workspaceUri);
+			if (!proj) {
+				this.log("WARN: projectsForExecutable: No CMake project is open. Maybe run configure first.");
+				continue;
+			}
+
+			let model = proj.codeModel;
+			if (!model) continue;
+
+			let builddir = await proj.getBuildDirectory();
+			if (!builddir) continue;
+
+			let cmake = new CMakeTests(builddir);
+			let found = false;
+			model.configurations.forEach((conf) => {
+				// TODO: Replace with cmake.containsExecutable()
+				cmake.cppFilesForExecutable(executableFileName, conf).forEach((cppFile) => {
+					found = true;
+				});
+			});
+
+			if (found) {
+				projects.push(proj);
+			}
+		}
+
+		return projects;
 	}
 
 	/// Returns the .cpp file that corresponds to the executable
@@ -464,6 +554,8 @@ async function runHandler(
 		controller.items.forEach(test => queue.push(test));
 	}
 
+	thisExtension.currentDoneRebuilds.clear();
+
 	while (queue.length > 0 && !token.isCancellationRequested) {
 		const test = queue.pop()!;
 
@@ -489,9 +581,9 @@ async function runHandler(
 			let result = false;
 			if (shouldDebug) {
 				let command = ourRunnable.command();
+				await thisExtension.maybeRebuild(command.executablePath);
 				await thisExtension.debugTest(command.label, command.executablePath, command.args);
 			} else {
-
 				// create a small function, that receives run, and appends output:
 
 				const appendOutput = (run: vscode.TestRun, message: string) => {
@@ -516,6 +608,7 @@ async function runHandler(
 					}
 				}
 
+				await thisExtension.maybeRebuild(ourRunnable.command().executablePath);
 				result = await ourRunnable.runTest();
 
 				if (result) {
