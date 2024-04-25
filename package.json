@@ -2,7 +2,7 @@
   "name": "qttest",
   "displayName": "kdab-qttest",
   "description": "Extension to list individual QtTest tests",
-  "version": "1.4.0",
+  "version": "1.5.0",
   "publisher": "sergiokdab",
   "repository": {
     "type": "git",
@@ -35,7 +35,7 @@
     "typescript": "^5.4.4"
   },
   "dependencies": {
-    "@iamsergio/qttest-utils": "2.1.0",
+    "@iamsergio/qttest-utils": "2.2.0",
     "@types/node": "18.x",
     "@types/vscode": "^1.75.0",
     "vscode-cmake-tools": "^1.0.0"
