@@ -348,10 +348,26 @@ class KDABQtTest {
 			let slotUri = testExecutable.vscodeTestItem.uri;
 
 			const subitem = controller.createTestItem(slot.id, slot.name, slotUri);
+			subitem.range = await this.rangeForSlot(slot);
 			slot.vscodeTestItem = subitem;
 			item.children.add(subitem);
 			this.individualTestMap.set(subitem, slot);
 		}
+	}
+
+	async rangeForSlot(slot: QtTestSlot): Promise<vscode.Range | undefined> {
+		let executable = slot.parentQTest;
+		let cppFile = await this.cppFileForExecutable(executable.filename);
+		if (!cppFile) return undefined;
+
+		// Read contents of cppFile:
+		let contents = fs.readFileSync(cppFile, "utf8");
+		let lines = contents.split("\n");
+		// find which line number has the text slot.name
+		let lineNumber = lines.findIndex((line) => line.includes(slot.name + "()"));
+		if (lineNumber == -1) return undefined;
+
+		return new vscode.Range(lineNumber, 0, lineNumber, 0);
 	}
 
 	public async cmakeBuildDirs(): Promise<string[]> {
