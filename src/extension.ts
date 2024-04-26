@@ -379,7 +379,7 @@ class KDABQtTest {
 	}
 
 	/// Returns the .cpp file that corresponds to the executable
-	async cppFileForExecutable(executableFileName: string): Promise<string | undefined> {
+	async cppFileForExecutable(executableFileName: string, workaround: boolean = false): Promise<string | undefined> {
 
 		let candidates: string[] = [];
 		let api = await getCMakeToolsApi(Version.latest);
@@ -388,10 +388,18 @@ class KDABQtTest {
 			return undefined;
 		}
 
-		// iterate workspace folders:
-		for (let folder of vscode.workspace.workspaceFolders ?? []) {
+		let folders = vscode.workspace.workspaceFolders ?? [];
+		if (folders.length === 0) {
+			this.log("ERROR: cppFileForExecutable: No workspace folders are open");
+			return undefined;
+		}
+
+		for (let folder of folders) {
 			let workspaceUri = folder.uri;
-			if (!workspaceUri) continue;
+			if (!workspaceUri) {
+				this.log("ERROR: cppFileForExecutable: No workspace uri");
+				continue;
+			}
 
 			let proj = await api.getProject(workspaceUri);
 			if (!proj) {
@@ -400,14 +408,20 @@ class KDABQtTest {
 			}
 
 			let model = proj.codeModel;
-			if (!model) continue;
+			if (!model) {
+				this.log("WARN: cppFileForExecutable: No code model");
+				continue;
+			}
 
 			let builddir = await proj.getBuildDirectory();
-			if (!builddir) continue;
+			if (!builddir) {
+				this.log("WARN: cppFileForExecutable: No build directory");
+				continue;
+			}
 
 			let cmake = new CMakeTests(builddir);
 			model.configurations.forEach((conf) => {
-				cmake.cppFilesForExecutable(executableFileName, conf).forEach((cppFile) => {
+				cmake.cppFilesForExecutable(executableFileName, conf, workaround).forEach((cppFile) => {
 					candidates.push(cppFile);
 				});
 			});
@@ -420,7 +434,15 @@ class KDABQtTest {
 		this.log("INFO: candidates=" + candidates + "; for executable=" + executableFileName);
 
 		if (candidates.length === 0) {
-			return undefined;
+			// We couldn't find the .cpp file, but it might be due https://github.com/microsoft/vscode-cmake-tools-api/issues/7
+			// So we try again with the workaround
+			if (workaround) {
+				/// oops, even workaround failed
+				return undefined;
+			} else {
+				// Trying a 2nd time with the workaround
+				return this.cppFileForExecutable(executableFileName, /*workaround=*/ true);
+			}
 		} else if (candidates.length === 1) {
 			return candidates[0];
 		} else {
