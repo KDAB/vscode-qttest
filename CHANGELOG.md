@@ -2,6 +2,18 @@
 
 
 
+## [1.5.0] - 2024-04-26
+
+### 🚀 Features
+
+- Show popup if debugger extension is missing
+- Add support for "Go To Test"
+
+### 🐛 Bug Fixes
+
+- Rebuild before run now works if codemodel is buggy
+- "Go to File" now works if codemodel is buggy
+
 ## [1.4.0] - 2024-04-25
 
 ### 🚀 Features
