@@ -22,3 +22,5 @@ add_test(NAME test1 COMMAND test1)
 add_test(NAME test2 COMMAND test2)
 add_test(NAME test3 COMMAND test3)
 add_test(NAME non_qttest COMMAND non_qttest)
+
+add_subdirectory(nested_dir)
