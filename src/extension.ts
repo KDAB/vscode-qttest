@@ -145,13 +145,17 @@ class KDABQtTest {
 					continue;
 
 				let targetName = cmake.targetNameForExecutable(executableFileName, conf);
-				if (targetName) {
-					this.log("INFO: maybeRebuild: Rebuilding target: " + targetName);
-					await project.build([targetName]);
-					this.currentDoneRebuilds.add(buildDir);
-				} else {
-					this.log("ERROR: maybeRebuild: Failed to get target name for executable: " + executableFileName + "; codemodel was:\n"
-						+ JSON.stringify(project.codeModel, null, 2));
+				if (!targetName) {
+					// apply workaround for https://github.com/microsoft/vscode-cmake-tools-api/issues/7
+					targetName = cmake.targetNameForExecutable(executableFileName, conf,  /*workaround=*/ true);
+					if (targetName) {
+						this.log("INFO: maybeRebuild: Rebuilding target: " + targetName);
+						await project.build([targetName]);
+						this.currentDoneRebuilds.add(buildDir);
+					} else {
+						this.log("ERROR: maybeRebuild: Failed to get target name for executable: " + executableFileName + "; codemodel was:\n"
+							+ JSON.stringify(project.codeModel, null, 2));
+					}
 				}
 			}
 
@@ -302,10 +306,18 @@ class KDABQtTest {
 		}
 
 		let projects: Project[] = [];
+		let workspaceFolders = vscode.workspace.workspaceFolders ?? [];
+		if (workspaceFolders.length === 0) {
+			this.log("ERROR: projectsForExecutable: No workspace folders are open");
+			return undefined;
+		}
 
-		for (let folder of vscode.workspace.workspaceFolders ?? []) {
+		for (let folder of workspaceFolders) {
 			let workspaceUri = folder.uri;
-			if (!workspaceUri) continue;
+			if (!workspaceUri) {
+				this.log("ERROR: projectsForExecutable: No workspace uri");
+				continue;
+			}
 
 			let proj = await api.getProject(workspaceUri);
 			if (!proj) {
@@ -314,23 +326,53 @@ class KDABQtTest {
 			}
 
 			let model = proj.codeModel;
-			if (!model) continue;
+			if (!model) {
+				this.log("WARN: projectsForExecutable: No code model");
+				continue;
+			}
+
+			if (model.configurations.length === 0) {
+				this.log("WARN: projectsForExecutable: No configurations");
+				continue;
+			}
 
 			let builddir = await proj.getBuildDirectory();
-			if (!builddir) continue;
+			if (!builddir) {
+				this.log("WARN: projectsForExecutable: No build directory");
+				continue;
+			}
 
 			let cmake = new CMakeTests(builddir);
+
 			let found = false;
 			model.configurations.forEach((conf) => {
-				// TODO: Replace with cmake.containsExecutable()
-				cmake.cppFilesForExecutable(executableFileName, conf).forEach((cppFile) => {
+				if (found) return;
+
+				let targetName = cmake.targetNameForExecutable(executableFileName, conf);
+
+				if (targetName) {
 					found = true;
-				});
+				} else {
+					/// Workaround for https://github.com/microsoft/vscode-cmake-tools-api/issues/7
+					targetName = cmake.targetNameForExecutable(executableFileName, conf, /*workaround=*/ true);
+
+					if (targetName) {
+						found = true;
+					} else {
+						// For debug only
+						// let tmpFile = "/tmp/foo3.json_" + path.basename(executableFileName);
+						// fs.writeFileSync(tmpFile, JSON.stringify(conf, null, 2));
+						this.log("WARN: projectsForExecutable: not found even with workaround");
+					}
+				}
 			});
 
-			if (found) {
+			if (found)
 				projects.push(proj);
-			}
+		}
+
+		if (projects.length === 0) {
+			this.log("WARN: projectsForExecutable: No projects found for executable: " + executableFileName);
 		}
 
 		return projects;
@@ -369,6 +411,10 @@ class KDABQtTest {
 					candidates.push(cppFile);
 				});
 			});
+
+			// if (candidates.length === 0) {
+			// 	this.log("INFO: cppFileForExecutable: No candidate found in current config. model was:" + JSON.stringify(model.configurations, null, 2));
+			// }
 		}
 
 		this.log("INFO: candidates=" + candidates + "; for executable=" + executableFileName);
