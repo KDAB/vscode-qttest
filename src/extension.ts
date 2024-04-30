@@ -841,7 +841,23 @@ async function runHandler(
           };
         }
 
-        await thisExtension.maybeRebuild(ourRunnable.command().executablePath);
+        let built_fine = await thisExtension.maybeRebuild(
+          ourRunnable.command().executablePath,
+        );
+
+        if (built_fine) {
+          // Focus the "Test Results" pane:
+          vscode.commands.executeCommand(
+            "workbench.panel.testResults.view.focus",
+          );
+        } else {
+          // Well, not sure what to do here.
+          // It might have failed building simply because the CMake vscode codemodel is buggy
+          // As seen in https://github.com/microsoft/vscode-cmake-tools-api/issues/7
+          // So just print a warning, but leave the CMake output pane open so user can see what went wrong, if anytying
+          thisExtension.log("ERROR: Failed to rebuild");
+        }
+
         result = await ourRunnable.runTest();
 
         if (result) {
