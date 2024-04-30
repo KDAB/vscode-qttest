@@ -854,7 +854,7 @@ async function runHandler(
           // Well, not sure what to do here.
           // It might have failed building simply because the CMake vscode codemodel is buggy
           // As seen in https://github.com/microsoft/vscode-cmake-tools-api/issues/7
-          // So just print a warning, but leave the CMake output pane open so user can see what went wrong, if anytying
+          // So just print a warning, but leave the CMake output pane open so user can see what went wrong, if anything
           thisExtension.log("ERROR: Failed to rebuild");
         }
 
