@@ -2,6 +2,12 @@
 
 
 
+## [1.6.0] - 2024-04-30
+
+### 🚀 Features
+
+- Focus "Test Results" when running
+
 ## [1.5.0] - 2024-04-26
 
 ### 🚀 Features
