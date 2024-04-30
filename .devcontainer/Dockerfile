@@ -6,7 +6,6 @@
 # cd /vscode-qttest/
 
 FROM ubuntu:24.04
-MAINTAINER Sergio Martins (sergio.martins@kdab.com)
 
 ENV TZ=Europe/Berlin
 ENV LC_CTYPE=C.UTF-8
