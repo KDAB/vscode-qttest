@@ -2,6 +2,12 @@
 
 
 
+## [1.8.1] - 2024-05-02
+
+### 🐛 Bug Fixes
+
+- Rename extension to qttests
+
 ## [1.8.0] - 2024-05-02
 
 ### 🚀 Features
