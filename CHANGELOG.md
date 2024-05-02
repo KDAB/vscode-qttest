@@ -2,6 +2,12 @@
 
 
 
+## [1.7.0] - 2024-05-02
+
+### 🚀 Features
+
+- Bump package-lock versions
+
 ## [1.6.1] - 2024-05-02
 
 ### 🐛 Bug Fixes
