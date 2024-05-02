@@ -2,7 +2,7 @@
   "name": "qttest",
   "displayName": "kdab-qttest",
   "description": "Extension to list individual QtTest tests",
-  "version": "1.6.0",
+  "version": "1.6.1",
   "publisher": "sergiokdab",
   "repository": {
     "type": "git",

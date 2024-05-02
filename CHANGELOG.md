@@ -2,6 +2,12 @@
 
 
 
+## [1.6.1] - 2024-05-02
+
+### 🐛 Bug Fixes
+
+- Fix running non-Qt tests
+
 ## [1.6.0] - 2024-04-30
 
 ### 🚀 Features
