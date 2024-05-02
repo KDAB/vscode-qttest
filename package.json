@@ -1,8 +1,8 @@
 {
-  "name": "qttest",
-  "displayName": "kdab-qttest",
-  "description": "Extension to list individual QtTest tests",
-  "version": "1.8.0",
+  "name": "qttests",
+  "displayName": "QtTest Runner",
+  "description": "Extension to list and run individual QtTest slots",
+  "version": "1.8.1",
   "publisher": "KDAB",
   "repository": {
     "type": "git",
