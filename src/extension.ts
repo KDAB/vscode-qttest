@@ -952,7 +952,7 @@ export function activate(context: vscode.ExtensionContext) {
 
   // register a command, triggered on context menu:
   context.subscriptions.push(
-    vscode.commands.registerCommand("sergiokdab.qttest.debugTest", async () => {
+    vscode.commands.registerCommand("KDAB.qttest.debugTest", async () => {
       // get the text currently selected:
       let editor = vscode.window.activeTextEditor;
       if (!editor) {

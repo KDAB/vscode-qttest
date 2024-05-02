@@ -3,7 +3,7 @@
   "displayName": "kdab-qttest",
   "description": "Extension to list individual QtTest tests",
   "version": "1.7.0",
-  "publisher": "sergiokdab",
+  "publisher": "KDAB",
   "repository": {
     "type": "git",
     "url": "https://github.com/KDAB/vscode-qttest.git"
@@ -83,7 +83,7 @@
     },
     "commands": [
       {
-        "command": "sergiokdab.qttest.debugTest",
+        "command": "KDAB.qttest.debugTest",
         "title": "Debug selection..."
       }
     ],
@@ -103,7 +103,7 @@
       ],
       "kdab.qttest.menu": [
         {
-          "command": "sergiokdab.qttest.debugTest"
+          "command": "KDAB.qttest.debugTest"
         }
       ]
     }
