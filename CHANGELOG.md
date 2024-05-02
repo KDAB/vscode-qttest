@@ -2,6 +2,12 @@
 
 
 
+## [1.8.0] - 2024-05-02
+
+### 🚀 Features
+
+- Change publisher to KDAB
+
 ## [1.7.0] - 2024-05-02
 
 ### 🚀 Features
