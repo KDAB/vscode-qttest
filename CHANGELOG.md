@@ -2,6 +2,13 @@
 
 
 
+## [1.8.4](https://github.com/KDAB/vscode-qttest/compare/v1.8.3...v1.8.4) (2024-05-03)
+
+
+### Bug Fixes
+
+* Remove skip-github-release ([3696aa7](https://github.com/KDAB/vscode-qttest/commit/3696aa7db50b07f6e68f693bc6e2000cbc8536d5))
+
 ## [1.8.3](https://github.com/KDAB/vscode-qttest/compare/v1.8.2...v1.8.3) (2024-05-03)
 
 
