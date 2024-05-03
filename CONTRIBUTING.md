@@ -18,25 +18,26 @@ In the docker, run `run_manual_test.sh` which will build the Qt project, the vsc
 and open vscode. It should show the test slots in the test explorer.<br>
 Or just run the script locally.
 
+## Commit
 
-## Install git-cliff
+We use conventional commits. Prefix your commit message with `fix: `, `feat: ` or `chore: `
+depending if it's a fix, a feature or misc change. This will be used for automatic changelog generation.
 
-```bash
-cargo install git-cliff
-```
 
 ## Releasing
 
-Get a version compatible with semver, run `git cliff --bump | head -n 5` and replace NEW_VERSION
-export NEW_VERSION=1.0.0
+Changelog, version bump and tagging is done automatically by merging the release PR. See the [workflow](.github/workflows/release-please.yml).
+
 
 - Optional: run `npm update` to update packages in package-lock.json. Not needed for every release.
 - Optional: `npm outdated` and maybe bump more packages in package.json. Not needed for every release.
 - run `run_manual_test.sh` and do some manual testing
 - Run `vsce ls` and see if unneeded junk isn't being packaged
-- Make sure Github Actions CI is green
-- npm version $NEW_VERSION
-- git cliff --tag ${NEW_VERSION} > CHANGELOG.md && git add CHANGELOG.md package.json package-lock.json && git commit -m "chore: bump version"
+- Merge the Release PR if CI is green (you'll need to close and reopen it to trigger CI!)
+
+## Publishing
+
+After you did the release, go ahead and package:
+
 - npm install && npm run compile && npm prune --production && vsce package
-- git tag -a v${NEW_VERSION} -m "v${NEW_VERSION}" && git push && git push --tags
 - (KDAB only) Go to https://marketplace.visualstudio.com/manage/publishers/KDAB and upload the *.vsix file
