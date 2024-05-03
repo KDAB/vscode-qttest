@@ -2,6 +2,14 @@
 
 
 
+## [1.8.3](https://github.com/KDAB/vscode-qttest/compare/v1.8.2...v1.8.3) (2024-05-03)
+
+
+### Bug Fixes
+
+* Cleanup CONTRIBUTING.md to reflect release-please workflow ([b884b64](https://github.com/KDAB/vscode-qttest/commit/b884b64bcaa486d9f027f13d64e04093836fb6d1))
+* Use the release-please GH action instead of cli ([ed11797](https://github.com/KDAB/vscode-qttest/commit/ed117974a8042b1593ffcf70914abca020bb6fcf))
+
 ## [1.8.2](https://github.com/KDAB/vscode-qttest/compare/v1.8.1...v1.8.2) (2024-05-03)
 
 

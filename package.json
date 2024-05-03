@@ -2,7 +2,7 @@
   "name": "qttests",
   "displayName": "QtTest Runner",
   "description": "Extension to list and run individual QtTest slots",
-  "version": "1.8.2",
+  "version": "1.8.3",
   "publisher": "KDAB",
   "repository": {
     "type": "git",
