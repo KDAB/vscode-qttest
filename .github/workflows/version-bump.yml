@@ -18,6 +18,10 @@ jobs:
       - name: Setup git author name
         uses: fregante/setup-git-user@v2
 
+      - name: Install release-please
+        run: |
+          sudo npm i release-please -g
+
       - name: Create PR to bump version
         run: |
           release-please release-pr --token=${{ secrets.GITHUB_TOKEN }} --repo-url=KDAB/vscode-qttest
