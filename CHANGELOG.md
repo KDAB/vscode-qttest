@@ -2,6 +2,13 @@
 
 
 
+## [1.8.2](https://github.com/KDAB/vscode-qttest/compare/qttests-v1.8.1...qttests-v1.8.2) (2024-05-03)
+
+
+### Bug Fixes
+
+* Run tests in alphabetically order ([f3e1b2c](https://github.com/KDAB/vscode-qttest/commit/f3e1b2c68e503367e2f4e129898cfec672da5f86))
+
 ## [1.8.1] - 2024-05-02
 
 ### 🐛 Bug Fixes
@@ -90,4 +97,3 @@
 ### 🐛 Bug Fixes
 
 - Handle user pressing the refresh button
-
