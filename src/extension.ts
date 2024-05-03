@@ -780,7 +780,7 @@ async function runHandler(
   thisExtension.currentDoneRebuilds.clear();
 
   while (queue.length > 0 && !token.isCancellationRequested) {
-    const test = queue.pop()!;
+    const test = queue.shift()!;
 
     if (request.exclude?.includes(test)) {
       // User asked to exclude
