@@ -24,7 +24,7 @@ depending if it's a fix, a feature or misc change. This will be used for automat
 
 ## Fixing bugs in the qttest-utils module
 
-Most of the functionallity lives in a separate repo, [qttest-utils](https://github.com/KDAB/qttest-utils/), which is published to npm. After you fix a bug there, bump its version and publish it to npm, then you can edit `package.json` and bump the qttest-utils dependency version.
+Most of the functionality lives in a separate repo, [qttest-utils](https://github.com/KDAB/qttest-utils/), which is published to npm. After you fix a bug there, bump its version and publish it to npm, then you can edit `package.json` and bump the qttest-utils dependency version.
 
 
 ## Releasing
