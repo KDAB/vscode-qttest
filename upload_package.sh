@@ -5,11 +5,9 @@
 # Uploads the qttests-<version>.vsix package to GitHub Release
 # Called by .github/workflows/package.yml
 
-# Get latest tag:
-TAG_NAME=`git describe --tags --abbrev=0`
-
-# Drop the 'v' prefix:
-VERSION=${TAG_NAME:1}
+# Get latest version and tag:
+VERSION=`jq -r '.version' package.json`
+TAG_NAME=v$VERSION
 
 PACKAGE_FILENAME=qttests-$VERSION.vsix
 
