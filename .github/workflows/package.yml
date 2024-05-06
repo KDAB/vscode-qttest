@@ -26,4 +26,4 @@ jobs:
           npm install && npm run compile && npm prune --production && vsce package
 
       - name: debug
-        run: echo $ {{ GITHUB_REF }}
+        run: env
