@@ -2,6 +2,13 @@
 
 
 
+## [1.8.5](https://github.com/KDAB/vscode-qttest/compare/v1.8.4...v1.8.5) (2024-05-06)
+
+
+### Bug Fixes
+
+* CONTRIBUTING.md now explains our release workflow ([baa4538](https://github.com/KDAB/vscode-qttest/commit/baa45381ba55ae4fb7d84428333a491650894113))
+
 ## [1.8.4](https://github.com/KDAB/vscode-qttest/compare/v1.8.3...v1.8.4) (2024-05-03)
 
 
