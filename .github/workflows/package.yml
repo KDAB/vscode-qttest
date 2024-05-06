@@ -25,5 +25,8 @@ jobs:
         run: |
           npm install && npm run compile && npm prune --production && vsce package
 
-      - name: debug
-        run: env
+      - name: Upload asset
+        run: |
+          sh upload_package.sh
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
