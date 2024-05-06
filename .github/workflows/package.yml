@@ -5,6 +5,8 @@ name: Package
 
 on:
   workflow_dispatch:
+  release:
+    types: [created]
 
 jobs:
   release-package:
@@ -22,3 +24,6 @@ jobs:
       - name: Package
         run: |
           npm install && npm run compile && npm prune --production && vsce package
+
+      - name: debug
+        run: echo $ {{ GITHUB_REF }}
