@@ -2,6 +2,13 @@
 
 
 
+## [1.9.0](https://github.com/KDAB/vscode-qttest/compare/v1.8.5...v1.9.0) (2024-06-17)
+
+
+### Features
+
+* Use a proper tap parser to parse test results ([48d75c6](https://github.com/KDAB/vscode-qttest/commit/48d75c6b79b6ccd752bbd0c6e54f7a0e992500e6))
+
 ## [1.8.5](https://github.com/KDAB/vscode-qttest/compare/v1.8.4...v1.8.5) (2024-05-06)
 
 
