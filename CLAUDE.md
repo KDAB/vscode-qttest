@@ -9,22 +9,10 @@ KDAB QtTest is a VSCode extension that integrates [Qt Test](https://doc.qt.io/qt
 ## Commands
 
 ```bash
-# Install dependencies
-npm install
+# Build
+./build_package.sh
 
-# Compile TypeScript to out/
-npm run compile
-
-# Watch mode (auto-recompile on changes)
-npm run watch
-
-# Lint
-npm run lint
-
-# Package as .vsix
-vsce package
-
-# Manual integration test (builds Qt test project and opens VSCode)
+# Manual integration test (builds Qt test project and opens VSCode), only done by developer, not agents
 ./run_manual_test.sh
 ```
 
