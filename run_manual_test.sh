@@ -1,3 +1,12 @@
+#!/bin/bash
+
+# SPDX-FileCopyrightText: 2023 Klarälvdalens Datakonsult AB, a KDAB Group company <info@kdab.com>
+# SPDX-License-Identifier: MIT
+
+set -e
+
+SCRIPT_DIR=$(dirname "$(realpath "$0")")
+cd "$SCRIPT_DIR" || exit 1
 
 QT_BUILD_DIR=test/qt_test/build-dev/
 VSCODE_DATA=test/qt_test/build-dev/vscode/
@@ -6,12 +15,12 @@ VSCODE_DATA=test/qt_test/build-dev/vscode/
 alias code_clean="code --user-data-dir $VSCODE_DATA --extensions-dir $VSCODE_DATA"
 
 rm *vsix &> /dev/null
-rm -rf BUILD_DIR &> /dev/null
+rm -rf $QT_BUILD_DIR &> /dev/null
 
 npm install && npm run compile && npm prune --production && vsce package && \
 cmake -S test/qt_test/ --preset=dev && \
 cmake --build $QT_BUILD_DIR/ && \
-code --install-extension qttests-*.vsix \
+code_clean --install-extension qttests-*.vsix \
      --install-extension ms-vscode.cmake-tools \
      --install-extension vadimcn.vscode-lldb && \
-code test/qt_test/vscode.code-workspace --crash-reporter-directory /tmp/
+code_clean test/qt_test/vscode.code-workspace --crash-reporter-directory /tmp/
