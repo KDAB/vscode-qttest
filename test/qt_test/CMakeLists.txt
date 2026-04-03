@@ -5,7 +5,7 @@
 cmake_minimum_required(VERSION 3.12)
 project(qttest)
 
-find_package(Qt5Test 5.15 REQUIRED)
+find_package(Qt6Test 6.5 REQUIRED)
 set(CMAKE_AUTOMOC ON)
 
 add_executable(test1 test1.cpp)
@@ -13,9 +13,9 @@ add_executable(test2 test2.cpp)
 add_executable(test3 test3.cpp)
 add_executable(non_qttest non_qttest.cpp)
 
-target_link_libraries(test1 Qt5::Test)
-target_link_libraries(test2 Qt5::Test)
-target_link_libraries(test3 Qt5::Test)
+target_link_libraries(test1 Qt6::Test)
+target_link_libraries(test2 Qt6::Test)
+target_link_libraries(test3 Qt6::Test)
 
 enable_testing()
 add_test(NAME test1 COMMAND test1)
