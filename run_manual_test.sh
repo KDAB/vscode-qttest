@@ -6,7 +6,7 @@
 set -e
 
 SCRIPT_DIR=$(dirname "$(realpath "$0")")
-cd "$SCRIPT_DIR" || exit 1
+cd "$SCRIPT_DIR"
 
 QT_BUILD_DIR=test/qt_test/build-dev/
 VSCODE_DATA=test/qt_test/build-dev/vscode/
@@ -14,10 +14,11 @@ VSCODE_DATA=test/qt_test/build-dev/vscode/
 # Alias for debugging purposes, when needed
 alias code_clean="code --user-data-dir $VSCODE_DATA --extensions-dir $VSCODE_DATA"
 
-rm *vsix &> /dev/null
 rm -rf $QT_BUILD_DIR &> /dev/null
 
-npm install && npm run compile && npm prune --production && vsce package && \
+echo "Running build_package.sh..."
+./build_package.sh
+
 cmake -S test/qt_test/ --preset=dev && \
 cmake --build $QT_BUILD_DIR/ && \
 code_clean --install-extension qttests-*.vsix \
