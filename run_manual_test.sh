@@ -11,8 +11,10 @@ cd "$SCRIPT_DIR"
 QT_BUILD_DIR=test/qt_test/build-dev/
 VSCODE_DATA=test/qt_test/build-dev/vscode/
 
-# Alias for debugging purposes, when needed
-alias code_clean="code --user-data-dir $VSCODE_DATA --extensions-dir $VSCODE_DATA"
+code_clean() {
+     # Alias for debugging purposes, when needed
+    code --user-data-dir "$VSCODE_DATA" --extensions-dir "$VSCODE_DATA" "$@"
+}
 
 rm -rf $QT_BUILD_DIR &> /dev/null
 
