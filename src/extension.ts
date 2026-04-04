@@ -159,13 +159,13 @@ class KDABQtTest {
       /// we support it, but won't happen	in practice
       for (let project of projects) {
         let conf = project.codeModel?.configurations[0];
-        if (!conf) continue;
+        if (!conf) {continue;}
 
         let buildDir = await project.getBuildDirectory();
-        if (!buildDir) continue;
+        if (!buildDir) {continue;}
 
         // When running a group of slots, be sure to not build the same build dir twice
-        if (this.currentDoneRebuilds.has(buildDir)) continue;
+        if (this.currentDoneRebuilds.has(buildDir)) {continue;}
 
         let targetName = cmake.targetNameForExecutable(
           executableFileName,
@@ -254,7 +254,7 @@ class KDABQtTest {
       option = this.defaultDebuggerTypeForPlatform();
     }
 
-    if (option == "Existing Launch") {
+    if (option === "Existing Launch") {
       let launch = await this.pickDebuggerConfFromLaunch();
       if (launch) {
         return launch;
@@ -423,7 +423,7 @@ class KDABQtTest {
 
       let found = false;
       model.configurations.forEach((conf) => {
-        if (found) return;
+        if (found) {return;}
 
         let targetName = cmake.targetNameForExecutable(
           executableFileName,
@@ -453,7 +453,7 @@ class KDABQtTest {
         }
       });
 
-      if (found) projects.push(proj);
+      if (found) {projects.push(proj);}
     }
 
     if (projects.length === 0) {
@@ -644,14 +644,14 @@ class KDABQtTest {
   async rangeForSlot(slot: QtTestSlot): Promise<vscode.Range | undefined> {
     let executable = slot.parentQTest;
     let cppFile = await this.cppFileForExecutable(executable.filename);
-    if (!cppFile) return undefined;
+    if (!cppFile) {return undefined;}
 
     // Read contents of cppFile:
     let contents = fs.readFileSync(cppFile, "utf8");
     let lines = contents.split("\n");
     // find which line number has the text slot.name
     let lineNumber = lines.findIndex((line) => line.includes(slot.name + "()"));
-    if (lineNumber == -1) return undefined;
+    if (lineNumber === -1) {return undefined;}
 
     return new vscode.Range(lineNumber, 0, lineNumber, 0);
   }
@@ -841,11 +841,11 @@ async function runHandler(
           };
         }
 
-        let built_fine = await thisExtension.maybeRebuild(
+        let builtFine = await thisExtension.maybeRebuild(
           ourRunnable.command().executablePath,
         );
 
-        if (built_fine) {
+        if (builtFine) {
           // Focus the "Test Results" pane:
           vscode.commands.executeCommand(
             "workbench.panel.testResults.view.focus",
