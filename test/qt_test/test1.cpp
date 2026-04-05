@@ -9,7 +9,7 @@ class MyTest : public QObject {
   Q_OBJECT
 private Q_SLOTS:
   void slotA() {}
-  void slotB() {}
+  void slotB() { QCOMPARE(qgetenv("MY_ENV"), QByteArray("VALUE")); }
   void slotC() {}
 };
 

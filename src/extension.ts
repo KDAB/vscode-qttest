@@ -762,7 +762,7 @@ class KDABQtTest {
   }
 }
 
-let thisExtension = new KDABQtTest();
+export let thisExtension = new KDABQtTest();
 
 async function runHandler(
   shouldDebug: boolean,
