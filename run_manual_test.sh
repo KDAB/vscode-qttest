@@ -26,4 +26,5 @@ cmake --build $QT_BUILD_DIR/ && \
 code_clean --install-extension qttests-*.vsix \
      --install-extension ms-vscode.cmake-tools \
      --install-extension vadimcn.vscode-lldb && \
-code_clean test/qt_test/vscode.code-workspace --crash-reporter-directory /tmp/
+code_clean test/qt_test/vscode.code-workspace --crash-reporter-directory /tmp/ \
+     --disable-workspace-trust
