@@ -32,6 +32,14 @@ jobs:
       - name: compile
         run: npm run compile
 
+      - name: test (Linux)
+        if: runner.os == 'Linux'
+        run: xvfb-run -a npm test
+
+      - name: test (non-Linux)
+        if: runner.os != 'Linux'
+        run: npm test
+
       - name: remove dev dependencies
         run: npm prune --production
 
