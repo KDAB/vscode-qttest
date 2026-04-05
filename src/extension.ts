@@ -754,6 +754,10 @@ class KDABQtTest {
       debuggerConf.program = executablePath;
       debuggerConf.args = args;
 
+      if (!debuggerConf.cwd) {
+        debuggerConf.cwd = path.dirname(executablePath);
+      }
+
       if (environment.length > 0) {
         if (debuggerConf.type === "lldb") {
           // CodeLLDB uses "env" as a key-value object

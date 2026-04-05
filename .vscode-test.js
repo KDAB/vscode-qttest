@@ -32,4 +32,13 @@ module.exports = defineConfig([
       ui: "tdd",
     },
   },
+  {
+    files: "out/test/integration/debug_cwd.test.js",
+    workspaceFolder: "./test/qt_test",
+    installExtensions: ["vadimcn.vscode-lldb", "ms-vscode.cmake-tools"],
+    mocha: {
+      timeout: 120000,
+      ui: "tdd",
+    },
+  },
 ]);
