@@ -2,6 +2,21 @@
 
 
 
+## [1.10.0](https://github.com/KDAB/vscode-qttest/compare/v1.9.0...v1.10.0) (2026-04-05)
+
+
+### Features
+
+* bump to node22 ([1d4d9cd](https://github.com/KDAB/vscode-qttest/commit/1d4d9cd432ec56ca6fe6ee06f11dbbbc12f0f04a))
+
+
+### Bug Fixes
+
+* add node types to tsconfig ([44dad9c](https://github.com/KDAB/vscode-qttest/commit/44dad9c3751891e663ae337ae8ee6b3ff90c1e44))
+* eslint fixes ([a9b487f](https://github.com/KDAB/vscode-qttest/commit/a9b487f74697694b7db2b418e8d9d78b6e549993))
+* make run_manual_test.sh executable ([08cb882](https://github.com/KDAB/vscode-qttest/commit/08cb882a00baab2ec39d3a82ef1d2ac887d66dd6))
+* use code_clean for testing ([cf59626](https://github.com/KDAB/vscode-qttest/commit/cf59626861f0220e5128377b2c798bdd1d007780))
+
 ## [1.9.0](https://github.com/KDAB/vscode-qttest/compare/v1.8.5...v1.9.0) (2024-06-17)
 
 
