@@ -19,3 +19,5 @@ src/test/suite/extension.test.ts
 .vscode-test.js
 run_manual_test.sh
 .codespellrc
+.prettierrc
+.prettierignore
