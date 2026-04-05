@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: MIT
 # Creates the package
 
-name: Publish package
+name: Upload package as GitHub asset
 
 on:
   workflow_dispatch:

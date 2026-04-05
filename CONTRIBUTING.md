@@ -1,20 +1,20 @@
 # Tips for contributors
 
-## Prepare your development environment
-
-Just follow `.devcontainer/Dockerfile` to see what's needed.<br>
-
 ## Build
 
 ```
 npm install
 vsce package
-code --install-extension qttest-0.3.0.vsix
+code --install-extension qttest-*.vsix
 ```
 
-## Running tests
+## Automatic tests
 
-In the docker (or otherwise), run `run_manual_test.sh` which will build the Qt project, the vscode extension
+Run `npm test`
+
+## Manual tests
+
+Run `./run_manual_test.sh` which will build the Qt project, the vscode extension
 and open vscode. It should show the test slots in the test explorer.<br>
 
 ## Commit
