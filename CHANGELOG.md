@@ -2,6 +2,13 @@
 
 
 
+## [1.10.1](https://github.com/KDAB/vscode-qttest/compare/v1.10.0...v1.10.1) (2026-04-05)
+
+
+### Bug Fixes
+
+* Pass cwd if launcher is missing it ([22bdc97](https://github.com/KDAB/vscode-qttest/commit/22bdc97ef057ed3d4c101837374219c7095b4b5f))
+
 ## [1.10.0](https://github.com/KDAB/vscode-qttest/compare/v1.9.0...v1.10.0) (2026-04-05)
 
 
