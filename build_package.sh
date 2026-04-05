@@ -22,8 +22,5 @@ npm run lint
 echo "Compiling..."
 npm run compile
 
-echo "Pruning..."
-npm prune --production
-
 echo "vsce package..."
 vsce package

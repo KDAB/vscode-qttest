@@ -23,7 +23,7 @@ jobs:
           npm install @vscode/vsce typescript -g
       - name: Package
         run: |
-          npm install && npm run compile && npm prune --production && vsce package
+          vsce package
 
       - name: Upload asset
         run: |

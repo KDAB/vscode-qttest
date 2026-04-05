@@ -9,7 +9,7 @@
     "url": "https://github.com/KDAB/vscode-qttest.git"
   },
   "engines": {
-    "vscode": "^1.75.0"
+    "vscode": "^1.90.0"
   },
   "license": "MIT",
   "categories": [
@@ -32,18 +32,18 @@
   },
   "devDependencies": {
     "@types/mocha": "^10.0.10",
+    "@types/node": "^22.0.0",
+    "@types/vscode": "^1.90.0",
     "@vscode/test-cli": "^0.0.12",
     "@vscode/test-electron": "^2.5.2",
     "eslint": "^10.2.0",
     "mocha": "^11.7.5",
     "prettier": "3.8.1",
+    "typescript": "^6.0.2",
     "typescript-eslint": "^8.0.0"
   },
   "dependencies": {
     "@iamsergio/qttest-utils": "2.6.0",
-    "@types/node": "^22.0.0",
-    "@types/vscode": "^1.110.0",
-    "typescript": "^6.0.2",
     "vscode-cmake-tools": "^1.5.0"
   },
   "extensionDependencies": [

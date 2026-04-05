@@ -63,9 +63,6 @@ jobs:
         if: runner.os != 'Linux'
         run: npm test
 
-      - name: remove dev dependencies
-        run: npm prune --production
-
       - name: vsce package
         run: vsce package
 
