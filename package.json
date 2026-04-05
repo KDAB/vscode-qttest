@@ -26,10 +26,13 @@
     "watch": "tsc -watch -p ./",
     "pretest": "npm run compile && npm run lint",
     "lint": "eslint src",
-    "test": "vscode-test"
+    "test": "vscode-test",
+    "format:check": "prettier --check \"src/**/*.ts\"",
+    "format:fix": "prettier --write \"src/**/*.ts\""
   },
   "devDependencies": {
     "eslint": "^9.0.0",
+    "prettier": "3.8.1",
     "typescript-eslint": "^8.0.0"
   },
   "dependencies": {
