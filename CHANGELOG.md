@@ -2,6 +2,13 @@
 
 
 
+## [1.11.0](https://github.com/KDAB/vscode-qttest/compare/v1.10.1...v1.11.0) (2026-04-05)
+
+
+### Features
+
+* better support for gtests ([e39ef16](https://github.com/KDAB/vscode-qttest/commit/e39ef16307ab8d044967e1e3d06ed7e696e52295))
+
 ## [1.10.1](https://github.com/KDAB/vscode-qttest/compare/v1.10.0...v1.10.1) (2026-04-05)
 
 
