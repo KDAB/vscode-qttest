@@ -22,6 +22,14 @@
         "program": "${command:cmake.launchTargetPath}",
         "args": [],
         "cwd": "${command:cmake.buildDirectory}"
+      },
+      {
+        "name": "CustomCWD",
+        "type": "lldb",
+        "request": "launch",
+        "program": "${command:cmake.launchTargetPath}",
+        "args": [],
+        "cwd": "/tmp/"
       }
     ]
   }
