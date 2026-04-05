@@ -16,7 +16,7 @@ suite("Debug CWD", function () {
   }
 
   suiteSetup(async function () {
-    if (os.platform() === "win32") {
+    if (os.platform() !== "linux") {
       this.skip();
       return;
     }
@@ -63,7 +63,7 @@ suite("Debug CWD", function () {
   });
 
   test("debugTest uses cwd from Existing Launch config", async function () {
-    if (os.platform() === "win32") {
+    if (os.platform() !== "linux") {
       this.skip();
       return;
     }
