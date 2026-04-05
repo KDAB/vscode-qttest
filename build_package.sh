@@ -13,6 +13,12 @@ rm -rf *vsix &> /dev/null
 echo "npm install..."
 npm install
 
+echo "npm run format:check..."
+npm run format:check
+
+echo "npm run lint..."
+npm run lint
+
 echo "Compiling..."
 npm run compile
 
