@@ -927,7 +927,9 @@ function updateStatusForSubTests(
   }
 }
 
-export function activate(context: vscode.ExtensionContext) {
+export function activate(
+  context: vscode.ExtensionContext,
+): vscode.TestController {
   thisExtension.log("activated!");
 
   const controller = vscode.tests.createTestController("kdab.qttest", "Qt");
@@ -1026,6 +1028,8 @@ export function activate(context: vscode.ExtensionContext) {
       );
     }),
   );
+
+  return controller;
 }
 
 export function deactivate() {}

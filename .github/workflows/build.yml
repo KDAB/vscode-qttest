@@ -29,6 +29,29 @@ jobs:
           npm install --loglevel verbose
           npm install @vscode/vsce typescript -g
 
+      - name: Install ninja (Windows / Linux)
+        if: runner.os != 'macOS'
+        uses: turtlesec-no/get-ninja@main
+
+      - name: Install ninja (macOS)
+        if: runner.os == 'macOS'
+        run: brew install ninja
+
+      - name: Make sure MSVC is found when Ninja generator is in use
+        if: runner.os == 'Windows'
+        uses: ilammy/msvc-dev-cmd@v1
+
+      - name: Install Qt 6.5.0
+        uses: jurplel/install-qt-action@v4
+        with:
+          version: 6.5.0
+          cache: true
+
+      - name: Build Qt test fixtures
+        run: |
+          cmake -S test/qt_test --preset=dev
+          cmake --build test/qt_test/build-dev --verbose
+
       - name: compile
         run: npm run compile
 
@@ -45,3 +68,14 @@ jobs:
 
       - name: vsce package
         run: vsce package
+
+      - name: Upload CMake and Build logs
+        if: always() # Captures logs on success, failure, or cancellation
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-artifacts-${{ matrix.os }}
+          path: |
+            test/qt_test/build-dev/CMakeFiles/CMakeOutput.log
+            test/qt_test/build-dev/CMakeFiles/CMakeError.log
+            test/qt_test/build-dev/CMakeCache.txt
+            test/qt_test/build-dev/Testing/Temporary/**/*
