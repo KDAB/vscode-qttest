@@ -19,6 +19,7 @@ target_link_libraries(test3 Qt6::Test)
 
 enable_testing()
 add_test(NAME test1 COMMAND test1)
+set_tests_properties(test1 PROPERTIES ENVIRONMENT "MY_ENV=VALUE")
 add_test(NAME test2 COMMAND test2)
 add_test(NAME test3 COMMAND test3)
 add_test(NAME non_qttest COMMAND non_qttest)

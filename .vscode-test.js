@@ -16,4 +16,12 @@ module.exports = defineConfig([
       ui: "tdd",
     },
   },
+  {
+    files: "out/test/integration/environment.test.js",
+    workspaceFolder: "./test/qt_test",
+    mocha: {
+      timeout: 120000,
+      ui: "tdd",
+    },
+  },
 ]);
