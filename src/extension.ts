@@ -70,6 +70,14 @@ class KDABQtTest {
   }
 
   public defaultDebuggerTypeForPlatform(): string {
+    const hasMsCpptools =
+      !!vscode.extensions.getExtension("ms-vscode.cpptools");
+    const hasCodeLLDB = !!vscode.extensions.getExtension("vadimcn.vscode-lldb");
+
+    if (!hasMsCpptools && hasCodeLLDB) {
+      return DEBUGGER_CODELLDB;
+    }
+
     if (os.platform() === "linux") {
       return DEBUGGER_MS_GDB;
     } else if (os.platform() === "darwin") {
