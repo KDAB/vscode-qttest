@@ -724,6 +724,7 @@ class KDABQtTest {
     name: string,
     executablePath: string,
     args: string[],
+    environment: string[] = [],
   ): Promise<void> {
     this.log(
       "INFO: debugTest: name=" +
@@ -752,6 +753,30 @@ class KDABQtTest {
       debuggerConf.name = name;
       debuggerConf.program = executablePath;
       debuggerConf.args = args;
+
+      if (environment.length > 0) {
+        if (debuggerConf.type === "lldb") {
+          // CodeLLDB uses "env" as a key-value object
+          const envObj: Record<string, string> = {};
+          for (const kv of environment) {
+            const idx = kv.indexOf("=");
+            if (idx > -1) {
+              envObj[kv.substring(0, idx)] = kv.substring(idx + 1);
+            }
+          }
+          debuggerConf.env = envObj;
+        } else {
+          // MS cpptools uses "environment" as [{name, value}]
+          debuggerConf.environment = environment.map((kv) => {
+            const idx = kv.indexOf("=");
+            return {
+              name: idx > -1 ? kv.substring(0, idx) : kv,
+              value: idx > -1 ? kv.substring(idx + 1) : "",
+            };
+          });
+        }
+      }
+
       let result = await vscode.debug.startDebugging(undefined, debuggerConf);
       if (!result) {
         this.log(
@@ -832,11 +857,15 @@ async function runHandler(
       let result = false;
       if (shouldDebug) {
         let command = ourRunnable.command();
+        let qtTest = singleTestSlot
+          ? singleTestSlot.parentQTest
+          : qtTestExecutable;
         await thisExtension.maybeRebuild(command.executablePath);
         await thisExtension.debugTest(
           command.label,
           command.executablePath,
           command.args,
+          qtTest?.environment ?? [],
         );
       } else {
         // create a small function, that receives run, and appends output:
@@ -1033,6 +1062,7 @@ export function activate(
         command.label,
         command.executablePath,
         command.args,
+        executable.environment,
       );
     }),
   );
