@@ -24,4 +24,9 @@ add_test(NAME test2 COMMAND test2)
 add_test(NAME test3 COMMAND test3)
 add_test(NAME non_qttest COMMAND non_qttest)
 
+find_package(GTest REQUIRED)
+add_executable(test_gtest test_gtest.cpp)
+target_link_libraries(test_gtest GTest::GTest GTest::Main)
+add_test(NAME test_gtest COMMAND test_gtest)
+
 add_subdirectory(nested_dir)
