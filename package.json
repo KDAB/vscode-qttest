@@ -24,7 +24,7 @@
     "vscode:prepublish": "npm run compile",
     "compile": "tsc -p ./",
     "watch": "tsc -watch -p ./",
-    "pretest": "npm run compile && npm run lint",
+    "pretest": "tsc -p tsconfig.test.json && npm run lint",
     "lint": "eslint src/ --max-warnings 0",
     "test": "vscode-test",
     "format:check": "prettier --check \"src/**/*.ts\"",
