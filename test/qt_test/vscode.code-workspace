@@ -32,5 +32,9 @@
         "cwd": "/tmp/"
       }
     ]
+  },
+  "settings": {
+    "git.openRepositoryInParentFolders": "never",
+    "cmake.enableAutomaticKitScan": false
   }
 }
