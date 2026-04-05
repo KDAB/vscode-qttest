@@ -41,13 +41,34 @@ jobs:
         if: runner.os == 'Windows'
         uses: ilammy/msvc-dev-cmd@v1
 
+      - name: Install GTest (Linux)
+        if: runner.os == 'Linux'
+        run: sudo apt-get install -y libgtest-dev
+
+      - name: Install GTest (macOS)
+        if: runner.os == 'macOS'
+        run: brew install googletest
+
+      - name: Install GTest (Windows)
+        if: runner.os == 'Windows'
+        run: vcpkg install gtest:x64-windows
+        env:
+          VCPKG_ROOT: C:\vcpkg
+
       - name: Install Qt 6.5.0
         uses: jurplel/install-qt-action@v4
         with:
           version: 6.5.0
           cache: true
 
-      - name: Build Qt test fixtures
+      - name: Build Qt test fixtures (Windows)
+        if: runner.os == 'Windows'
+        run: |
+          cmake -S test/qt_test --preset=dev -DCMAKE_TOOLCHAIN_FILE=C:/vcpkg/scripts/buildsystems/vcpkg.cmake
+          cmake --build test/qt_test/build-dev --verbose
+
+      - name: Build Qt test fixtures (non-Windows)
+        if: runner.os != 'Windows'
         run: |
           cmake -S test/qt_test --preset=dev
           cmake --build test/qt_test/build-dev --verbose
