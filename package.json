@@ -31,7 +31,7 @@
     "format:fix": "prettier --write \"src/**/*.ts\""
   },
   "devDependencies": {
-    "eslint": "^9.0.0",
+    "eslint": "^10.2.0",
     "prettier": "3.8.1",
     "typescript-eslint": "^8.0.0"
   },
