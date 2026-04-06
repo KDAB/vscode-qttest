@@ -14,13 +14,7 @@ import {
   UIElement,
   Project,
 } from "vscode-cmake-tools";
-import qttest from "@iamsergio/qttest-utils";
-import {
-  QtTest,
-  QtTests,
-  QtTestSlot,
-} from "@iamsergio/qttest-utils/out/qttest";
-import { CMakeTests } from "@iamsergio/qttest-utils/out/cmake";
+import { QtTest, QtTests, QtTestSlot, CMakeTests } from "./qttest-utils";
 
 const DEBUGGER_MS_GDB = "ms-vscode.cpptools gdb";
 const DEBUGGER_MS_LLDB = "ms-vscode.cpptools lldb";

@@ -17,7 +17,7 @@ export default tseslint.config(
             "@typescript-eslint": tseslint.plugin
         },
         rules: {
-            "@typescript-eslint/naming-convention": "warn",
+            "@typescript-eslint/naming-convention": "off",
             "curly": "warn",
             "eqeqeq": "warn",
             "no-throw-literal": "warn",

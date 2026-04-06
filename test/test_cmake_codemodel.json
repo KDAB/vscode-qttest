@@ -1,0 +1,356 @@
+{
+    "name": "Debug",
+    "projects": [
+        {
+            "name": "qttest",
+            "targets": [
+                {
+                    "name": "non_qttest",
+                    "type": "EXECUTABLE",
+                    "sourceDirectory": "/vscode-qttest/test/qt_test",
+                    "fullName": "non_qttest",
+                    "artifacts": [
+                        "/vscode-qttest/test/qt_test/build-dev/non_qttest"
+                    ],
+                    "fileGroups": [
+                        {
+                            "isGenerated": false,
+                            "sources": [
+                                "build-dev/non_qttest_autogen/mocs_compilation.cpp",
+                                "non_qttest.cpp"
+                            ],
+                            "language": "CXX",
+                            "includePath": [
+                                {
+                                    "backtrace": 0,
+                                    "path": "/vscode-qttest/test/qt_test/build-dev/non_qttest_autogen/include"
+                                }
+                            ],
+                            "compileCommandFragments": [
+                                "-g"
+                            ],
+                            "defines": []
+                        },
+                        {
+                            "sources": [
+                                "build-dev/non_qttest_autogen/timestamp",
+                                "build-dev/non_qttest_autogen/timestamp.rule"
+                            ],
+                            "isGenerated": true
+                        }
+                    ]
+                },
+                {
+                    "name": "non_qttest_autogen",
+                    "type": "UTILITY",
+                    "sourceDirectory": "/vscode-qttest/test/qt_test",
+                    "artifacts": [],
+                    "fileGroups": [
+                        {
+                            "sources": [
+                                "build-dev/CMakeFiles/non_qttest_autogen",
+                                "build-dev/CMakeFiles/non_qttest_autogen.rule",
+                                "build-dev/non_qttest_autogen/timestamp.rule"
+                            ],
+                            "isGenerated": true
+                        }
+                    ]
+                },
+                {
+                    "name": "non_qttest_autogen_timestamp_deps",
+                    "type": "UTILITY",
+                    "sourceDirectory": "/vscode-qttest/test/qt_test",
+                    "artifacts": [],
+                    "fileGroups": [
+                        {
+                            "sources": [
+                                "build-dev/CMakeFiles/non_qttest_autogen_timestamp_deps",
+                                "build-dev/CMakeFiles/non_qttest_autogen_timestamp_deps.rule"
+                            ],
+                            "isGenerated": true
+                        }
+                    ]
+                },
+                {
+                    "name": "test1",
+                    "type": "EXECUTABLE",
+                    "sourceDirectory": "/vscode-qttest/test/qt_test",
+                    "fullName": "test1",
+                    "artifacts": [
+                        "/vscode-qttest/test/qt_test/build-dev/test1"
+                    ],
+                    "fileGroups": [
+                        {
+                            "isGenerated": false,
+                            "sources": [
+                                "build-dev/test1_autogen/mocs_compilation.cpp",
+                                "test1.cpp"
+                            ],
+                            "language": "CXX",
+                            "includePath": [
+                                {
+                                    "backtrace": 0,
+                                    "path": "/vscode-qttest/test/qt_test/build-dev/test1_autogen/include"
+                                },
+                                {
+                                    "backtrace": 2,
+                                    "isSystem": true,
+                                    "path": "/usr/include/x86_64-linux-gnu/qt5"
+                                },
+                                {
+                                    "backtrace": 2,
+                                    "isSystem": true,
+                                    "path": "/usr/include/x86_64-linux-gnu/qt5/QtTest"
+                                },
+                                {
+                                    "backtrace": 2,
+                                    "isSystem": true,
+                                    "path": "/usr/include/x86_64-linux-gnu/qt5/QtCore"
+                                },
+                                {
+                                    "backtrace": 2,
+                                    "isSystem": true,
+                                    "path": "/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++"
+                                }
+                            ],
+                            "compileCommandFragments": [
+                                "-g",
+                                "-fPIC"
+                            ],
+                            "defines": [
+                                "QT_CORE_LIB",
+                                "QT_TESTCASE_BUILDDIR=\"/vscode-qttest/test/qt_test/build-dev\"",
+                                "QT_TESTLIB_LIB"
+                            ]
+                        },
+                        {
+                            "sources": [
+                                "build-dev/test1_autogen/timestamp",
+                                "build-dev/test1_autogen/timestamp.rule"
+                            ],
+                            "isGenerated": true
+                        }
+                    ]
+                },
+                {
+                    "name": "test1_autogen",
+                    "type": "UTILITY",
+                    "sourceDirectory": "/vscode-qttest/test/qt_test",
+                    "artifacts": [],
+                    "fileGroups": [
+                        {
+                            "sources": [
+                                "build-dev/CMakeFiles/test1_autogen",
+                                "build-dev/CMakeFiles/test1_autogen.rule",
+                                "build-dev/test1_autogen/timestamp.rule"
+                            ],
+                            "isGenerated": true
+                        }
+                    ]
+                },
+                {
+                    "name": "test1_autogen_timestamp_deps",
+                    "type": "UTILITY",
+                    "sourceDirectory": "/vscode-qttest/test/qt_test",
+                    "artifacts": [],
+                    "fileGroups": [
+                        {
+                            "sources": [
+                                "build-dev/CMakeFiles/test1_autogen_timestamp_deps",
+                                "build-dev/CMakeFiles/test1_autogen_timestamp_deps.rule"
+                            ],
+                            "isGenerated": true
+                        }
+                    ]
+                },
+                {
+                    "name": "test2",
+                    "type": "EXECUTABLE",
+                    "sourceDirectory": "/vscode-qttest/test/qt_test",
+                    "fullName": "test2",
+                    "description": "test for windows",
+                    "artifacts": [
+                        "/vscode-qttest\\test\\qt_test\\build-dev\\test2.exe"
+                    ],
+                    "fileGroups": [
+                        {
+                            "isGenerated": false,
+                            "sources": [
+                                "build-dev/test2_autogen/mocs_compilation.cpp",
+                                "test2.cpp"
+                            ],
+                            "language": "CXX",
+                            "includePath": [
+                                {
+                                    "backtrace": 0,
+                                    "path": "/vscode-qttest/test/qt_test/build-dev/test2_autogen/include"
+                                },
+                                {
+                                    "backtrace": 2,
+                                    "isSystem": true,
+                                    "path": "/usr/include/x86_64-linux-gnu/qt5"
+                                },
+                                {
+                                    "backtrace": 2,
+                                    "isSystem": true,
+                                    "path": "/usr/include/x86_64-linux-gnu/qt5/QtTest"
+                                },
+                                {
+                                    "backtrace": 2,
+                                    "isSystem": true,
+                                    "path": "/usr/include/x86_64-linux-gnu/qt5/QtCore"
+                                },
+                                {
+                                    "backtrace": 2,
+                                    "isSystem": true,
+                                    "path": "/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++"
+                                }
+                            ],
+                            "compileCommandFragments": [
+                                "-g",
+                                "-fPIC"
+                            ],
+                            "defines": [
+                                "QT_CORE_LIB",
+                                "QT_TESTCASE_BUILDDIR=\"/vscode-qttest/test/qt_test/build-dev\"",
+                                "QT_TESTLIB_LIB"
+                            ]
+                        },
+                        {
+                            "sources": [
+                                "build-dev/test2_autogen/timestamp",
+                                "build-dev/test2_autogen/timestamp.rule"
+                            ],
+                            "isGenerated": true
+                        }
+                    ]
+                },
+                {
+                    "name": "test2_autogen",
+                    "type": "UTILITY",
+                    "sourceDirectory": "/vscode-qttest/test/qt_test",
+                    "artifacts": [],
+                    "fileGroups": [
+                        {
+                            "sources": [
+                                "build-dev/CMakeFiles/test2_autogen",
+                                "build-dev/CMakeFiles/test2_autogen.rule",
+                                "build-dev/test2_autogen/timestamp.rule"
+                            ],
+                            "isGenerated": true
+                        }
+                    ]
+                },
+                {
+                    "name": "test2_autogen_timestamp_deps",
+                    "type": "UTILITY",
+                    "sourceDirectory": "/vscode-qttest/test/qt_test",
+                    "artifacts": [],
+                    "fileGroups": [
+                        {
+                            "sources": [
+                                "build-dev/CMakeFiles/test2_autogen_timestamp_deps",
+                                "build-dev/CMakeFiles/test2_autogen_timestamp_deps.rule"
+                            ],
+                            "isGenerated": true
+                        }
+                    ]
+                },
+                {
+                    "name": "test3",
+                    "type": "EXECUTABLE",
+                    "sourceDirectory": "/vscode-qttest/test/qt_test",
+                    "fullName": "test3",
+                    "description": "buggy artifact path on purpose",
+                    "artifacts": [
+                        "/vscode-qttest/test/qt_test/build-dev/test/bin/test3"
+                    ],
+                    "fileGroups": [
+                        {
+                            "isGenerated": false,
+                            "sources": [
+                                "build-dev/test3_autogen/mocs_compilation.cpp",
+                                "test3.cpp"
+                            ],
+                            "language": "CXX",
+                            "includePath": [
+                                {
+                                    "backtrace": 0,
+                                    "path": "/vscode-qttest/test/qt_test/build-dev/test3_autogen/include"
+                                },
+                                {
+                                    "backtrace": 2,
+                                    "isSystem": true,
+                                    "path": "/usr/include/x86_64-linux-gnu/qt5"
+                                },
+                                {
+                                    "backtrace": 2,
+                                    "isSystem": true,
+                                    "path": "/usr/include/x86_64-linux-gnu/qt5/QtTest"
+                                },
+                                {
+                                    "backtrace": 2,
+                                    "isSystem": true,
+                                    "path": "/usr/include/x86_64-linux-gnu/qt5/QtCore"
+                                },
+                                {
+                                    "backtrace": 2,
+                                    "isSystem": true,
+                                    "path": "/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++"
+                                }
+                            ],
+                            "compileCommandFragments": [
+                                "-g",
+                                "-fPIC"
+                            ],
+                            "defines": [
+                                "QT_CORE_LIB",
+                                "QT_TESTCASE_BUILDDIR=\"/vscode-qttest/test/qt_test/build-dev\"",
+                                "QT_TESTLIB_LIB"
+                            ]
+                        },
+                        {
+                            "sources": [
+                                "build-dev/test3_autogen/timestamp",
+                                "build-dev/test3_autogen/timestamp.rule"
+                            ],
+                            "isGenerated": true
+                        }
+                    ]
+                },
+                {
+                    "name": "test3_autogen",
+                    "type": "UTILITY",
+                    "sourceDirectory": "/vscode-qttest/test/qt_test",
+                    "artifacts": [],
+                    "fileGroups": [
+                        {
+                            "sources": [
+                                "build-dev/CMakeFiles/test3_autogen",
+                                "build-dev/CMakeFiles/test3_autogen.rule",
+                                "build-dev/test3_autogen/timestamp.rule"
+                            ],
+                            "isGenerated": true
+                        }
+                    ]
+                },
+                {
+                    "name": "test3_autogen_timestamp_deps",
+                    "type": "UTILITY",
+                    "sourceDirectory": "/vscode-qttest/test/qt_test",
+                    "artifacts": [],
+                    "fileGroups": [
+                        {
+                            "sources": [
+                                "build-dev/CMakeFiles/test3_autogen_timestamp_deps",
+                                "build-dev/CMakeFiles/test3_autogen_timestamp_deps.rule"
+                            ],
+                            "isGenerated": true
+                        }
+                    ]
+                }
+            ],
+            "sourceDirectory": "/vscode-qttest/test/qt_test"
+        }
+    ]
+}
