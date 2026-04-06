@@ -43,7 +43,7 @@
     "typescript-eslint": "^8.0.0"
   },
   "dependencies": {
-    "@iamsergio/qttest-utils": "2.6.1",
+    "tap-parser": "^18.3.0",
     "vscode-cmake-tools": "^1.5.0"
   },
   "extensionDependencies": [

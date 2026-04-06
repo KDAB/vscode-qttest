@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "target": "ES2022",
+    "outDir": "../../out/qttest-utils",
+    "rootDir": ".",
+    "esModuleInterop": true,
+    "strict": true,
+    "moduleResolution": "node10",
+    "ignoreDeprecations": "6.0",
+    "types": ["node"]
+  },
+  "files": ["test.ts"]
+}
