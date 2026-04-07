@@ -2,6 +2,13 @@
 
 
 
+## [1.11.1](https://github.com/KDAB/vscode-qttest/compare/v1.11.0...v1.11.1) (2026-04-07)
+
+
+### Bug Fixes
+
+* add script-file guards to skip execution of .sh/.bat test files ([adeba29](https://github.com/KDAB/vscode-qttest/commit/adeba293384147fa4683ecb491466fe0b53c6d33))
+
 ## [1.11.0](https://github.com/KDAB/vscode-qttest/compare/v1.10.1...v1.11.0) (2026-04-05)
 
 
