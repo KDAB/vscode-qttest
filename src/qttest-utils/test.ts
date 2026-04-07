@@ -2,6 +2,8 @@
 // Author: Sergio Martins <sergio.martins@kdab.com>
 // SPDX-License-Identifier: MIT
 
+import * as fs from "fs";
+import path from "path";
 import { CMakeTests } from "./cmake";
 import { QtTest, QtTests } from "./qttest";
 
@@ -11,6 +13,31 @@ import { QtTest, QtTests } from "./qttest";
 async function runTests(buildDirPath: string) {
   let qt = new QtTests();
   await qt.discoverViaCMake(buildDirPath);
+
+  const fooPath = path.resolve("test/qt_test/foo");
+  if (fs.existsSync(fooPath)) {
+    fs.unlinkSync(fooPath);
+  }
+
+  const shTest = new QtTest("test/qt_test/test.sh", "test/qt_test/");
+  if ((await shTest.isQtTestViaHelp()) !== false) {
+    console.error("FAIL: isQtTestViaHelp should return false for .sh");
+    process.exit(1);
+  }
+  if ((await shTest.isGTest()) !== false) {
+    console.error("FAIL: isGTest should return false for .sh");
+    process.exit(1);
+  }
+  await shTest.parseAvailableSlots();
+  if (!shTest.slots || shTest.slots.length !== 0) {
+    console.error("FAIL: parseAvailableSlots should yield 0 slots for .sh");
+    process.exit(1);
+  }
+  if (fs.existsSync(fooPath)) {
+    console.error("FAIL: a guard executed test.sh (foo exists)");
+    process.exit(1);
+  }
+  console.log("PASS: direct guard checks for .sh skip execution");
 
   // Verify that environment properties from CTest were discovered for test1
   const test1Exe = qt.qtTestExecutables.find((e) =>
@@ -27,6 +54,7 @@ async function runTests(buildDirPath: string) {
     );
     process.exit(1);
   }
+  console.log("PASS: test1 has expected environment");
 
   let expectedExecutables = [
     "test/qt_test/build-dev/test1",
@@ -34,6 +62,7 @@ async function runTests(buildDirPath: string) {
     "test/qt_test/build-dev/test3",
     "test/qt_test/build-dev/non_qttest",
     "test/qt_test/build-dev/test_gtest",
+    "test/qt_test/test.sh",
     "test/qt_test/build-dev/nested_dir/test_nested",
   ];
 
@@ -46,6 +75,9 @@ async function runTests(buildDirPath: string) {
     );
     process.exit(1);
   }
+  console.log(
+    "PASS: discovered " + expectedExecutables.length + " executables",
+  );
 
   // Verify that test_gtest is detected as a GTest
   const gtestExe = qt.qtTestExecutables.find((e) =>
@@ -85,11 +117,12 @@ async function runTests(buildDirPath: string) {
   /// Use the help way instead
   await qt.removeByRunningHelp();
 
-  /// Remove the non-qttest and gtest executables from qt.qtTestExecutables
+  /// Remove the non-qttest, gtest, and script executables from qt.qtTestExecutables
   qt.qtTestExecutables = qt.qtTestExecutables.filter(
     (e) =>
       !e.filenameWithoutExtension().endsWith("non_qttest") &&
-      !e.filenameWithoutExtension().endsWith("test_gtest"),
+      !e.filenameWithoutExtension().endsWith("test_gtest") &&
+      !e.filename.endsWith("test.sh"),
   );
 
   if (qt.qtTestExecutables.length !== 4) {
@@ -99,6 +132,7 @@ async function runTests(buildDirPath: string) {
     );
     process.exit(1);
   }
+  console.log("PASS: 4 Qt executables remain after filtering");
 
   // 1. Test that the executable test names are correct:
   let expectedFilteredExecutables = [
@@ -124,6 +158,12 @@ async function runTests(buildDirPath: string) {
 
   // 2. Test that the discovered slots are correct:
   await qt.dumpTestSlots();
+
+  if (fs.existsSync(fooPath)) {
+    console.error("FAIL: test.sh was executed during discovery (foo exists)");
+    process.exit(1);
+  }
+  console.log("PASS: test.sh was not executed during discovery");
 
   interface ExpectedSlots {
     [key: string]: string[];
@@ -151,6 +191,7 @@ async function runTests(buildDirPath: string) {
       i++;
     }
   }
+  console.log("PASS: all slot names are correct");
 
   // 3. Run the tests:
   let expectedSuccess = [true, false, false, true];
@@ -167,7 +208,7 @@ async function runTests(buildDirPath: string) {
     }
 
     if (process.platform === "linux") {
-      if (!executable.linksToQtTestLib()) {
+      if (!(await executable.linksToQtTestLib())) {
         console.error(
           "Expected test to link to QtTest: " + executable.filename,
         );
@@ -177,6 +218,7 @@ async function runTests(buildDirPath: string) {
 
     i++;
   }
+  console.log("PASS: test pass/fail outcomes are correct");
 
   // 4. Run individual slots:
   // Run a passing slot (slotA from test1)
@@ -194,6 +236,7 @@ async function runTests(buildDirPath: string) {
     console.error("Expected test to fail: " + slot2.name);
     process.exit(1);
   }
+  console.log("PASS: individual slot pass/fail outcomes are correct");
 
   // 5. Test executablesContainingSlot
   let executables = qt.executablesContainingSlot("slotB");
@@ -212,6 +255,7 @@ async function runTests(buildDirPath: string) {
     console.error("Expected 0 executables, got " + executables.length);
     process.exit(1);
   }
+  console.log("PASS: executablesContainingSlot works correctly");
 }
 
 async function runCodeModelTests(codeModelFile: string) {

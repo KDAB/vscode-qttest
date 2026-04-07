@@ -48,6 +48,11 @@ export class QtTest {
     this.buildDirPath = buildDirPath;
   }
 
+  private isScriptFile(): boolean {
+    const ext = path.extname(this.filename).toLowerCase();
+    return ext === ".sh" || ext === ".bat";
+  }
+
   public get id() {
     return this.filename;
   }
@@ -97,6 +102,10 @@ export class QtTest {
    * Calls "./yourqttest -functions" and stores the results in the slots property.
    */
   public async parseAvailableSlots(): Promise<void> {
+    if (this.isScriptFile()) {
+      this.slots = [];
+      return;
+    }
     if (await this.isGTest()) {
       logMessage(
         "qttest: Skipping -functions for GTest executable: " + this.filename,
@@ -167,6 +176,10 @@ export class QtTest {
    * Only implemented for Linux. Returns undefined on other platforms.
    */
   public linksToQtTestLib(): Promise<boolean> | undefined {
+    if (this.isScriptFile()) {
+      return Promise.resolve(false);
+    }
+
     let isLinux = process.platform === "linux";
     if (!isLinux) {
       return undefined;
@@ -208,6 +221,9 @@ export class QtTest {
   /// Returns whether this test is a QtTest by running it with -help and checking if the help text looks familiar
   /// Note that if this is not a QtTest it might not run help and instead execute the test itself
   public async isQtTestViaHelp(): Promise<boolean | undefined> {
+    if (this.isScriptFile()) {
+      return false;
+    }
     return await new Promise((resolve, reject) => {
       const child = spawn(this.filename, ["-help"], {
         env: this.buildSpawnEnv(),
@@ -235,6 +251,9 @@ export class QtTest {
   /// Returns whether this executable is a Google Test by running it with --help
   /// and checking if the output contains the GTest banner
   public async isGTest(): Promise<boolean> {
+    if (this.isScriptFile()) {
+      return false;
+    }
     return await new Promise((resolve) => {
       if (!fs.existsSync(this.filename)) {
         resolve(false);
@@ -339,7 +358,7 @@ export class QtTest {
           try {
             await this.updateSubTestStates(cwdDir, slot);
           } catch (e) {
-            logMessage("Failed to update sub-test states: " + e);
+            logMessage("ERROR: Failed to update sub-test states: " + e);
           }
         }
 
@@ -544,9 +563,14 @@ export class QtTests {
   }
 
   public async removeByRunningHelp() {
-    this.qtTestExecutables = this.qtTestExecutables.filter(
-      async (ex) => await ex.isQtTestViaHelp(),
-    );
+    let acceptedExecutables: QtTest[] = [];
+    for (const ex of this.qtTestExecutables) {
+      const isQtTest = await ex.isQtTestViaHelp();
+      if (isQtTest !== false) {
+        acceptedExecutables.push(ex);
+      }
+    }
+    this.qtTestExecutables = acceptedExecutables;
   }
 
   /// Removes any executable (from the list) that matches the specified regex
