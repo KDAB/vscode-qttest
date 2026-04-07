@@ -28,5 +28,6 @@ find_package(GTest REQUIRED)
 add_executable(test_gtest test_gtest.cpp)
 target_link_libraries(test_gtest GTest::GTest GTest::Main)
 add_test(NAME test_gtest COMMAND test_gtest)
+add_test(NAME script_test COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/test.sh)
 
 add_subdirectory(nested_dir)

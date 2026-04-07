@@ -123,7 +123,7 @@ export class CMakeTests {
       } catch (e) {
         try {
           logMessage(
-            "ctest: failed to parse environment for test: " +
+            "ERROR: ctest: failed to parse environment for test: " +
               JSON.stringify(testJSON) +
               " error: " +
               e,
