@@ -43,7 +43,7 @@
     "typescript-eslint": "^8.59.2"
   },
   "dependencies": {
-    "tap-parser": "^18.3.1",
+    "tap-parser": "^18.3.4",
     "vscode-cmake-tools": "^1.7.0"
   },
   "extensionDependencies": [
