@@ -35,7 +35,7 @@
     "@types/node": "^22.20.0",
     "@types/vscode": "^1.90.0",
     "@vscode/test-cli": "^0.0.15",
-    "@vscode/test-electron": "^2.5.2",
+    "@vscode/test-electron": "^3.0.0",
     "eslint": "^10.6.0",
     "mocha": "^11.7.6",
     "prettier": "3.9.4",
