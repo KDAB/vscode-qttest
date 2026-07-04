@@ -55,10 +55,10 @@ jobs:
         env:
           VCPKG_ROOT: C:\vcpkg
 
-      - name: Install Qt 6.5.0
+      - name: Install Qt 6.8.*
         uses: jurplel/install-qt-action@v4
         with:
-          version: 6.5.0
+          version: 6.8.*
           cache: true
 
       - name: Build Qt test fixtures (Windows)
