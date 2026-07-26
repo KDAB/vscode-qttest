@@ -8,18 +8,46 @@ KDAB QtTest is a VSCode extension that integrates [Qt Test](https://doc.qt.io/qt
 
 ## Commands
 
+### Development
+
 ```bash
-# Build
-./build_package.sh
+# Watch TypeScript files and recompile on changes
+npm run watch
 
-# Auto integration tests
-./test.sh
+# Lint and format checks
+npm run lint                # ESLint (enforces strict rules, zero warnings)
+npm run format:check        # Prettier formatting check
+npm run format:fix          # Auto-format with Prettier
 
-# Manual integration test (builds Qt test project and opens VSCode), only done by developer, not agents
-./run_manual_test.sh
+# Compile TypeScript to JavaScript
+npm run compile
 ```
 
-There are no automated unit tests — testing is done manually via `run_manual_test.sh`, which builds the sample Qt project in `test/qt_test/`, packages the extension, installs it, and opens VSCode.
+### Testing & Building
+
+```bash
+# Automated integration tests (runs across Linux, Windows, macOS in CI)
+npm test                    # Requires Qt 6.8, Ninja, GTest, and VSCode
+./test.sh                   # Same as: npm run pretest && npm test
+
+# Package the extension as a .vsix file
+./build_package.sh          # Output: qttests-*.vsix
+
+# Manual testing (interactive — opens VSCode with extension)
+./run_manual_test.sh        # Builds Qt test fixtures, packages extension, launches VSCode
+```
+
+### Testing Details
+
+Automated integration tests (`npm test`) use `@vscode/test-cli` to run VSCode extension tests. These require:
+- Qt 6.8 or later (installed via `jurplel/install-qt-action`)
+- CMake and Ninja build system
+- GTest (for test fixtures)
+- The sample Qt test project in `test/qt_test/` is built as part of CI
+
+The CI workflow (`.github/workflows/build.yml`) runs tests on Linux (with xvfb), Windows, and macOS.
+
+For interactive testing, use `./run_manual_test.sh`, which is meant for developer-only manual verification and is not run in CI.
 
 ## Architecture
 
@@ -42,9 +70,27 @@ The extension is intentionally minimal: **all extension logic lives in a single 
 
 The extension depends on `ms-vscode.cmake-tools` (declared as `extensionDependencies`). It uses the `vscode-cmake-tools` API (`getCMakeToolsApi`) to get build directories and project code models. There is a known workaround applied in `cppFileForExecutable()` and `projectsForExecutable()` for a cmake-tools API bug ([issue #7](https://github.com/microsoft/vscode-cmake-tools-api/issues/7)) where executable paths may be in a different format.
 
-### Fixing bugs in qttest-utils
+### Dependencies
 
-Most test discovery/execution logic is in the separate [qttest-utils](https://github.com/KDAB/qttest-utils/) repo. To fix bugs there: fix and publish a new npm version, then bump the `@iamsergio/qttest-utils` version in `package.json`.
+**@iamsergio/qttest-utils** — External npm package ([GitHub](https://github.com/KDAB/qttest-utils/)) containing most test discovery/execution logic. If you need to fix bugs there:
+1. Clone and fix the bug in [qttest-utils](https://github.com/KDAB/qttest-utils/)
+2. Publish a new version to npm
+3. Bump the `@iamsergio/qttest-utils` version in `package.json` and run `npm install`
+
+**ms-vscode.cmake-tools** — Extension dependency (required for this extension to work). Provides CMake integration API for discovering build directories and project code models.
+
+## Development Workflow
+
+- **ESLint** (strict, zero warnings allowed) and **Prettier** run automatically via pre-commit hooks (configured in `.pre-commit-config.yaml`)
+- **GitHub Actions** enforces linting on every PR and push (`.github/workflows/lints.yml`)
+- Code is type-checked during compilation (`tsc` with strict mode enabled)
+
+## Configuration & Settings
+
+The extension exposes two configuration options (in VSCode settings):
+
+- `KDAB.QtTest.debugger` — Which debugger to use when debugging tests (default/gdb/lldb/msvc). Options like "Existing Launch" allow reusing VSCode launch configurations.
+- `KDAB.QtTest.CheckTestLinksToQtTestLib` — Linux-only; check if test executable is linked to QtTestLib (useful to exclude non-Qt test binaries).
 
 ## Conventions
 
