@@ -7,6 +7,7 @@ import * as path from "path";
 import * as fs from "fs";
 import { spawn } from "child_process";
 import * as os from "os";
+import * as https from "https";
 import {
   CMakeToolsApi,
   Version,
@@ -962,6 +963,128 @@ function updateStatusForSubTests(
   }
 }
 
+const GDB_QT_PRINTERS_BASE_URL =
+  "https://invent.kde.org/kdevelop/kdevelop/-/raw/master/plugins/gdb/printers";
+
+/// Downloads the contents of a URL, following redirects
+function downloadFile(url: string, redirectsLeft = 5): Promise<string> {
+  return new Promise((resolve, reject) => {
+    https
+      .get(url, (res) => {
+        const status = res.statusCode ?? 0;
+        if (status >= 300 && status < 400 && res.headers.location) {
+          if (redirectsLeft <= 0) {
+            reject(new Error("Too many redirects while downloading " + url));
+            return;
+          }
+          resolve(downloadFile(res.headers.location, redirectsLeft - 1));
+          return;
+        }
+
+        if (status < 200 || status >= 300) {
+          reject(
+            new Error("Failed to download " + url + ": HTTP status " + status),
+          );
+          return;
+        }
+
+        let data = "";
+        res.on("data", (chunk) => (data += chunk));
+        res.on("end", () => resolve(data));
+      })
+      .on("error", reject);
+  });
+}
+
+/// Downloads the KDevelop Qt gdb pretty printer scripts and wires them up in ~/.config/gdb/gdbinit
+async function installGdbQtPrettyPrinters(): Promise<void> {
+  if (os.platform() !== "linux") {
+    thisExtension.log(
+      "ERROR: installGdbQtPrettyPrinters: Only supported on Linux",
+    );
+    vscode.window.showErrorMessage(
+      "Installing gdb Qt pretty printers is only supported on Linux.",
+    );
+    return;
+  }
+
+  const configDir = path.join(os.homedir(), ".config", "gdb");
+  const gdbinitPath = path.join(configDir, "gdbinit");
+  const legacyGdbinitPath = path.join(os.homedir(), ".gdbinit");
+
+  try {
+    const gdbinitExisted = fs.existsSync(gdbinitPath);
+    const existingContent = gdbinitExisted
+      ? fs.readFileSync(gdbinitPath, "utf8")
+      : "";
+
+    if (existingContent.includes("register_qt_printers")) {
+      thisExtension.log(
+        "INFO: installGdbQtPrettyPrinters: Already installed in " + gdbinitPath,
+      );
+      vscode.window.showInformationMessage(
+        "Qt gdb pretty printers are already installed in " + gdbinitPath,
+      );
+      return;
+    }
+
+    fs.mkdirSync(configDir, { recursive: true });
+
+    for (const filename of ["helper.py", "qt.py"]) {
+      const contents = await downloadFile(
+        GDB_QT_PRINTERS_BASE_URL + "/" + filename,
+      );
+      fs.writeFileSync(path.join(configDir, filename), contents);
+    }
+
+    const qtCreatorDebuggerDir = path.join(configDir, "qtcreator_debugger");
+    fs.mkdirSync(qtCreatorDebuggerDir, { recursive: true });
+
+    for (const filename of [
+      "__init__.py",
+      "dumper.py",
+      "gdbbridge.py",
+      "qttypes.py",
+    ]) {
+      const contents = await downloadFile(
+        GDB_QT_PRINTERS_BASE_URL + "/qtcreator_debugger/" + filename,
+      );
+      fs.writeFileSync(path.join(qtCreatorDebuggerDir, filename), contents);
+    }
+
+    let block = "";
+    if (
+      !gdbinitExisted &&
+      fs.existsSync(legacyGdbinitPath) &&
+      !existingContent.includes("source ~/.gdbinit")
+    ) {
+      block += "source ~/.gdbinit\n";
+    }
+    block +=
+      "\npython\n\n" +
+      "import sys, os\n" +
+      "sys.path.insert(0, os.path.expanduser('~/.config/gdb'))\n\n" +
+      "from qt import register_qt_printers\n" +
+      "register_qt_printers (None)\n\n" +
+      "end\n";
+
+    fs.appendFileSync(gdbinitPath, block);
+
+    thisExtension.log(
+      "INFO: installGdbQtPrettyPrinters: Installed pretty printers to " +
+        gdbinitPath,
+    );
+    vscode.window.showInformationMessage(
+      "Qt gdb pretty printers installed to " + gdbinitPath,
+    );
+  } catch (e: any) {
+    thisExtension.log("ERROR: installGdbQtPrettyPrinters: " + e.message);
+    vscode.window.showErrorMessage(
+      "Failed to install Qt gdb pretty printers: " + e.message,
+    );
+  }
+}
+
 export function activate(
   context: vscode.ExtensionContext,
 ): vscode.TestController {
@@ -1063,6 +1186,15 @@ export function activate(
         executable.environment,
       );
     }),
+  );
+
+  context.subscriptions.push(
+    vscode.commands.registerCommand(
+      "KDAB.qttest.installGdbPrettyPrinters",
+      async () => {
+        await installGdbQtPrettyPrinters();
+      },
+    ),
   );
 
   return controller;
