@@ -139,7 +139,9 @@ export class QtTest {
 
       child.on("exit", (code) => {
         if (code === 0) {
-          slotNames = slotNames.concat(output.split("\n"));
+          // QtQuickTest prints its function list via qDebug(), which defaults to
+          // stderr, whereas classic QTestLib prints -functions to stdout.
+          slotNames = slotNames.concat(output.split("\n"), err.split("\n"));
           slotNames = slotNames.map((entry) => entry.trim().replace("()", ""));
           slotNames = slotNames.filter((entry) => entry.length > 0);
 

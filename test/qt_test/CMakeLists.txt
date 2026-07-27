@@ -6,16 +6,20 @@ cmake_minimum_required(VERSION 3.12)
 project(qttest)
 
 find_package(Qt6Test 6.5 REQUIRED)
+find_package(Qt6 REQUIRED COMPONENTS Quick QuickTest)
 set(CMAKE_AUTOMOC ON)
 
 add_executable(test1 test1.cpp)
 add_executable(test2 test2.cpp)
 add_executable(test3 test3.cpp)
 add_executable(non_qttest non_qttest.cpp)
+add_executable(test_quick test_quick.cpp)
 
 target_link_libraries(test1 Qt6::Test)
 target_link_libraries(test2 Qt6::Test)
 target_link_libraries(test3 Qt6::Test)
+target_link_libraries(test_quick Qt6::QuickTest)
+target_compile_definitions(test_quick PRIVATE QUICK_TEST_SOURCE_DIR="${CMAKE_CURRENT_SOURCE_DIR}")
 
 enable_testing()
 add_test(NAME test1 COMMAND test1)
@@ -23,6 +27,7 @@ set_tests_properties(test1 PROPERTIES ENVIRONMENT "MY_ENV=VALUE")
 add_test(NAME test2 COMMAND test2)
 add_test(NAME test3 COMMAND test3)
 add_test(NAME non_qttest COMMAND non_qttest)
+add_test(NAME test_quick COMMAND test_quick)
 
 find_package(GTest REQUIRED)
 add_executable(test_gtest test_gtest.cpp)
