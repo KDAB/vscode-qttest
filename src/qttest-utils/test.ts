@@ -199,6 +199,39 @@ async function runTests(buildDirPath: string) {
   }
   console.log("PASS: all slot names are correct");
 
+  // 2b. Test that isQML is only set for the Quick Test executable, and that
+  // bareName strips the "TestCaseName::" qualifier QtQuickTest adds.
+  for (var executable of qt.qtTestExecutables) {
+    let expectedIsQML =
+      executable.relativeFilename() === "test/qt_test/build-dev/test_quick";
+    if (executable.isQML !== expectedIsQML) {
+      console.error(
+        "Expected isQML=" +
+          expectedIsQML +
+          " for " +
+          executable.relativeFilename() +
+          ", got " +
+          executable.isQML,
+      );
+      process.exit(1);
+    }
+  }
+
+  let quickTestExe = qt.qtTestExecutables.find((e) =>
+    e.filenameWithoutExtension().endsWith("test_quick"),
+  )!;
+  let bareNames = quickTestExe.slots!.map((slot) => slot.bareName);
+  if (
+    JSON.stringify(bareNames) !==
+    JSON.stringify(["test_addition", "test_string"])
+  ) {
+    console.error(
+      "Expected bareNames [test_addition, test_string], got " + bareNames,
+    );
+    process.exit(1);
+  }
+  console.log("PASS: isQML and bareName are correct");
+
   // 3. Run the tests:
   let expectedSuccess = [true, false, false, true, true];
   var i = 0;

@@ -643,11 +643,20 @@ class KDABQtTest {
     });
 
     for (let slot of testExecutable.slots) {
-      /// We just use the same URI as the parent, as vscode doesn't support line:column in urls
-      let slotUri = testExecutable.vscodeTestItem.uri;
+      let subitem: vscode.TestItem;
 
-      const subitem = controller.createTestItem(slot.id, slot.name, slotUri);
-      subitem.range = await this.rangeForSlot(slot);
+      if (testExecutable.isQML) {
+        // QtQuickTest slots live in a .qml file, not in the executable's .cpp file
+        let location = await this.qmlLocationForSlot(slot);
+        subitem = controller.createTestItem(slot.id, slot.name, location?.uri);
+        subitem.range = location?.range;
+      } else {
+        /// We just use the same URI as the parent, as vscode doesn't support line:column in urls
+        let slotUri = testExecutable.vscodeTestItem.uri;
+        subitem = controller.createTestItem(slot.id, slot.name, slotUri);
+        subitem.range = await this.rangeForSlot(slot);
+      }
+
       slot.vscodeTestItem = subitem;
       item.children.add(subitem);
       this.individualTestMap.set(subitem, slot);
@@ -671,6 +680,43 @@ class KDABQtTest {
     }
 
     return new vscode.Range(lineNumber, 0, lineNumber, 0);
+  }
+
+  /// Returns the .qml file and line range for a QtQuickTest slot.
+  ///
+  /// Unlike classic QtTest, a Quick Test's .qml files aren't part of the CMake target's
+  /// sources (QUICK_TEST_SOURCE_DIR only names a directory, resolved at runtime), so we
+  /// can't use the CMake code model like cppFileForExecutable() does. Instead we search
+  /// the executable's own source directory for "tst_*.qml" files, mirroring the same
+  /// naming convention QtQuickTest itself uses to discover them.
+  async qmlLocationForSlot(
+    slot: QtTestSlot,
+  ): Promise<{ uri: vscode.Uri; range: vscode.Range } | undefined> {
+    let cppFile = await this.cppFileForExecutable(slot.parentQTest.filename);
+    if (!cppFile) {
+      return undefined;
+    }
+
+    let sourceDir = path.dirname(cppFile);
+    let qmlFiles = await vscode.workspace.findFiles(
+      new vscode.RelativePattern(sourceDir, "**/tst_*.qml"),
+    );
+
+    let needle = "function " + slot.bareName + "(";
+    for (let qmlFile of qmlFiles) {
+      let contents = fs.readFileSync(qmlFile.fsPath, "utf8");
+      let lineNumber = contents
+        .split("\n")
+        .findIndex((line) => line.includes(needle));
+      if (lineNumber !== -1) {
+        return {
+          uri: qmlFile,
+          range: new vscode.Range(lineNumber, 0, lineNumber, 0),
+        };
+      }
+    }
+
+    return undefined;
   }
 
   public async cmakeBuildDirs(): Promise<string[]> {
