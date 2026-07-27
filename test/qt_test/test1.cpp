@@ -5,12 +5,20 @@
 #include <QDir>
 #include <QFile>
 #include <QObject>
+#include <QRect>
 #include <QtTest>
 
 class MyTest : public QObject {
   Q_OBJECT
 private Q_SLOTS:
-  void slotA() { QFile f("/tmp/slotA.cwd"); f.open(QIODevice::WriteOnly); f.write(QDir::currentPath().toUtf8()); }
+  void slotA() {
+    QString s = "test pretty printers";
+    QFile f("/tmp/slotA.cwd"); f.open(QIODevice::WriteOnly); f.write(QDir::currentPath().toUtf8());
+
+    QRect r(0, 0, 10, 10);
+
+    qDebug() << s << r;
+  }
   void slotB() { QCOMPARE(qgetenv("MY_ENV"), QByteArray("VALUE")); }
   void slotC() {}
 };
