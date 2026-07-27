@@ -61,6 +61,7 @@ async function runTests(buildDirPath: string) {
     "test/qt_test/build-dev/test2",
     "test/qt_test/build-dev/test3",
     "test/qt_test/build-dev/non_qttest",
+    "test/qt_test/build-dev/test_quick",
     "test/qt_test/build-dev/test_gtest",
     "test/qt_test/test.sh",
     "test/qt_test/build-dev/nested_dir/test_nested",
@@ -125,20 +126,21 @@ async function runTests(buildDirPath: string) {
       !e.filename.endsWith("test.sh"),
   );
 
-  if (qt.qtTestExecutables.length !== 4) {
+  if (qt.qtTestExecutables.length !== 5) {
     console.error(
-      "Expected 4 executables, at this point got " +
+      "Expected 5 executables, at this point got " +
         qt.qtTestExecutables.length,
     );
     process.exit(1);
   }
-  console.log("PASS: 4 Qt executables remain after filtering");
+  console.log("PASS: 5 Qt executables remain after filtering");
 
   // 1. Test that the executable test names are correct:
   let expectedFilteredExecutables = [
     "test/qt_test/build-dev/test1",
     "test/qt_test/build-dev/test2",
     "test/qt_test/build-dev/test3",
+    "test/qt_test/build-dev/test_quick",
     "test/qt_test/build-dev/nested_dir/test_nested",
   ];
   var i = 0;
@@ -172,6 +174,10 @@ async function runTests(buildDirPath: string) {
     "test/qt_test/build-dev/test1": ["slotA", "slotB", "slotC"],
     "test/qt_test/build-dev/test2": ["slotC", "slotD", "slotFail"],
     "test/qt_test/build-dev/test3": ["slotFail2", "slotF", "slotG"],
+    "test/qt_test/build-dev/test_quick": [
+      "QuickTest::test_addition",
+      "QuickTest::test_string",
+    ],
     "test/qt_test/build-dev/nested_dir/test_nested": [
       "slotNested1",
       "slotNested2",
@@ -193,8 +199,41 @@ async function runTests(buildDirPath: string) {
   }
   console.log("PASS: all slot names are correct");
 
+  // 2b. Test that isQML is only set for the Quick Test executable, and that
+  // bareName strips the "TestCaseName::" qualifier QtQuickTest adds.
+  for (var executable of qt.qtTestExecutables) {
+    let expectedIsQML =
+      executable.relativeFilename() === "test/qt_test/build-dev/test_quick";
+    if (executable.isQML !== expectedIsQML) {
+      console.error(
+        "Expected isQML=" +
+          expectedIsQML +
+          " for " +
+          executable.relativeFilename() +
+          ", got " +
+          executable.isQML,
+      );
+      process.exit(1);
+    }
+  }
+
+  let quickTestExe = qt.qtTestExecutables.find((e) =>
+    e.filenameWithoutExtension().endsWith("test_quick"),
+  )!;
+  let bareNames = quickTestExe.slots!.map((slot) => slot.bareName);
+  if (
+    JSON.stringify(bareNames) !==
+    JSON.stringify(["test_addition", "test_string"])
+  ) {
+    console.error(
+      "Expected bareNames [test_addition, test_string], got " + bareNames,
+    );
+    process.exit(1);
+  }
+  console.log("PASS: isQML and bareName are correct");
+
   // 3. Run the tests:
-  let expectedSuccess = [true, false, false, true];
+  let expectedSuccess = [true, false, false, true, true];
   var i = 0;
   for (var executable of qt.qtTestExecutables) {
     await executable.runTest();

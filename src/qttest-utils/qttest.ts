@@ -34,6 +34,12 @@ export class QtTest {
   /// The list of individual runnable test slots
   slots: QtTestSlot[] | null = null;
 
+  /// Whether this is a Qt Quick Test (a QML TestCase), as opposed to a classic
+  /// QObject-based QtTest. Set by parseAvailableSlots(): QtQuickTest prefixes every
+  /// function name with its QML TestCase name (e.g. "MyTestCase::myFunction"), which
+  /// a classic QtTest slot name can never contain.
+  isQML: boolean = false;
+
   /// Environment variables coming from CTest (array of "VAR=VALUE")
   environment: string[] = [];
 
@@ -139,12 +145,15 @@ export class QtTest {
 
       child.on("exit", (code) => {
         if (code === 0) {
-          slotNames = slotNames.concat(output.split("\n"));
+          // QtQuickTest prints its function list via qDebug(), which defaults to
+          // stderr, whereas classic QTestLib prints -functions to stdout.
+          slotNames = slotNames.concat(output.split("\n"), err.split("\n"));
           slotNames = slotNames.map((entry) => entry.trim().replace("()", ""));
           slotNames = slotNames.filter((entry) => entry.length > 0);
 
           if (slotNames.length > 0) {
             this.slots = [];
+            this.isQML = slotNames.every((name) => name.includes("::"));
             for (var slotName of slotNames) {
               var slot = new QtTestSlot(slotName, this);
               this.slots.push(slot);
@@ -498,6 +507,13 @@ export class QtTestSlot {
 
   public get id() {
     return this.parentQTest.filename + this.name;
+  }
+
+  /// For QtQuickTest slots, name is qualified as "TestCaseName::functionName".
+  /// Returns just the function name, stripping that qualifier if present.
+  public get bareName(): string {
+    const idx = this.name.lastIndexOf("::");
+    return idx === -1 ? this.name : this.name.substring(idx + 2);
   }
 
   public get absoluteFilePath() {
