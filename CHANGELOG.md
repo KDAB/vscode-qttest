@@ -2,6 +2,13 @@
 
 
 
+## [1.12.0](https://github.com/KDAB/vscode-qttest/compare/v1.11.1...v1.12.0) (2026-07-27)
+
+
+### Features
+
+* Add command to install pretty printers ([5a74bd1](https://github.com/KDAB/vscode-qttest/commit/5a74bd1c9e76de1061da666b6ff60068aa0f3632))
+
 ## [1.11.1](https://github.com/KDAB/vscode-qttest/compare/v1.11.0...v1.11.1) (2026-04-07)
 
 
