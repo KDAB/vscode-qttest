@@ -28,7 +28,10 @@ npm run compile
 ```bash
 # Automated integration tests (runs across Linux, Windows, macOS in CI)
 npm test                    # Requires Qt 6.8, Ninja, GTest, and VSCode
-./test.sh                   # Same as: npm run pretest && npm test
+./test.sh                   # Builds the Qt fixtures, then runs ./test_qttest.sh and npm test
+
+# Unit tests for the src/qttest-utils/ module (no VSCode needed)
+./test_qttest.sh            # Expects test/qt_test/build-dev/ to already be built
 
 # Package the extension as a .vsix file
 ./build_package.sh          # Output: qttests-*.vsix
@@ -45,13 +48,25 @@ Automated integration tests (`npm test`) use `@vscode/test-cli` to run VSCode ex
 - GTest (for test fixtures)
 - The sample Qt test project in `test/qt_test/` is built as part of CI
 
+The `src/qttest-utils/` unit tests (`./test_qttest.sh`) are plain node, so they only need the built Qt fixtures — no VSCode.
+
 The CI workflow (`.github/workflows/build.yml`) runs tests on Linux (with xvfb), Windows, and macOS.
 
 For interactive testing, use `./run_manual_test.sh`, which is meant for developer-only manual verification and is not run in CI.
 
 ## Architecture
 
-The extension is intentionally minimal: **all extension logic lives in a single file, `src/extension.ts`**, implemented as the `KDABQtTest` class. The bulk of Qt test discovery and execution logic lives in the separate npm package [`@iamsergio/qttest-utils`](https://github.com/KDAB/qttest-utils/) (imported as `QtTest`, `QtTests`, `QtTestSlot` from `@iamsergio/qttest-utils`).
+The extension is intentionally minimal: **all VSCode-facing logic lives in a single file, `src/extension.ts`**, implemented as the `KDABQtTest` class. The bulk of Qt test discovery and execution logic lives in the vendored `src/qttest-utils/` module (imported as `QtTest`, `QtTests`, `QtTestSlot`, `CMakeTests` from `./qttest-utils`).
+
+### src/qttest-utils/
+
+This code used to be the external npm package `@iamsergio/qttest-utils`; it now lives in-tree and is edited directly — there is no npm dependency to bump.
+
+- `qttest.ts` — `QtTests` (discovery), `QtTest` (a test executable: slot parsing, running, TAP result parsing), `QtTestSlot` (a single test slot)
+- `cmake.ts` — `CMakeTests`/`CMakeTest`, ctest querying and mapping executables back to CMake targets and source files
+- `utils.ts` — small helpers
+- `index.ts` — the module's public surface; import from `./qttest-utils`, not from the individual files
+- `test.ts` — standalone unit tests, run via `./test_qttest.sh` (excluded from the main `tsconfig.json`, compiled by `src/qttest-utils/tsconfig.test.json`)
 
 ### Key data structures
 
@@ -71,11 +86,6 @@ The extension is intentionally minimal: **all extension logic lives in a single 
 The extension depends on `ms-vscode.cmake-tools` (declared as `extensionDependencies`). It uses the `vscode-cmake-tools` API (`getCMakeToolsApi`) to get build directories and project code models. There is a known workaround applied in `cppFileForExecutable()` and `projectsForExecutable()` for a cmake-tools API bug ([issue #7](https://github.com/microsoft/vscode-cmake-tools-api/issues/7)) where executable paths may be in a different format.
 
 ### Dependencies
-
-**@iamsergio/qttest-utils** — External npm package ([GitHub](https://github.com/KDAB/qttest-utils/)) containing most test discovery/execution logic. If you need to fix bugs there:
-1. Clone and fix the bug in [qttest-utils](https://github.com/KDAB/qttest-utils/)
-2. Publish a new version to npm
-3. Bump the `@iamsergio/qttest-utils` version in `package.json` and run `npm install`
 
 **ms-vscode.cmake-tools** — Extension dependency (required for this extension to work). Provides CMake integration API for discovering build directories and project code models.
 

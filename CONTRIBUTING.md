@@ -22,9 +22,14 @@ and open vscode. It should show the test slots in the test explorer.<br>
 We use conventional commits. Prefix your commit message with `fix: `, `feat: ` or `chore: `
 depending if it's a fix, a feature or misc change. This will be used for automatic changelog generation.
 
-## Fixing bugs in the qttest-utils module
+## The qttest-utils module
 
-Most of the functionality lives in a separate repo, [qttest-utils](https://github.com/KDAB/qttest-utils/), which is published to npm. After you fix a bug there, bump its version and publish it to npm, then you can edit `package.json` and bump the qttest-utils dependency version.
+Most of the functionality (test discovery, running, result parsing) lives in `src/qttest-utils/`.
+It used to be a separate repo published to npm, but it's now part of this repo, so just fix bugs
+there directly — no version bumping or publishing involved.
+
+Its unit tests live in `src/qttest-utils/test.ts` and are run with `./test_qttest.sh`, which needs
+the Qt test fixtures in `test/qt_test/build-dev/` to be built first (`./test.sh` does both).
 
 
 ## Releasing
