@@ -2,6 +2,15 @@
 
 
 
+## [1.13.0](https://github.com/KDAB/vscode-qttest/compare/v1.12.0...v1.13.0) (2026-09-04)
+
+
+### Features
+
+* allow jumping into QML file ([a46512c](https://github.com/KDAB/vscode-qttest/commit/a46512c8b808048f987e913b2b22e3aa89679d32))
+* Support QtQuick Test ([67ed937](https://github.com/KDAB/vscode-qttest/commit/67ed937558654c8cdf54c89766aafede59bd3419))
+* Support QtQuick Test ([f811489](https://github.com/KDAB/vscode-qttest/commit/f8114894531d87b4d75ef2bb629ac39e8ff57cfb))
+
 ## [1.12.0](https://github.com/KDAB/vscode-qttest/compare/v1.11.1...v1.12.0) (2026-07-27)
 
 
