@@ -72,14 +72,18 @@
             "ms-vscode.cpptools msvc",
             "ms-vscode.cpptools gdb",
             "CodeLLDB",
+            "KDAB DAP gdb",
+            "KDAB DAP lldb",
             "Existing Launch"
           ],
           "enumDescriptions": [
-            "Defaults to VS on Windows, gdb on Linux and LLDB on macOS",
+            "Uses KDAB DAP if installed (gdb on Linux if it's 16.1 or later, LLDB on macOS), otherwise VS on Windows, gdb on Linux and LLDB on macOS",
             "LLDB via Microsoft C++ extension",
             "VS debugger via Microsoft C++ extension",
             "GDB via Microsoft C++ extension",
             "LLDB debugger via CodeLLDB extension",
+            "GDB (16.1 or later) via KDAB DAP extension",
+            "LLDB via KDAB DAP extension",
             "Use an existing launch configuration"
           ],
           "default": "default",
