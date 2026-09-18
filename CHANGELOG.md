@@ -2,6 +2,22 @@
 
 
 
+## [1.13.0](https://github.com/KDAB/vscode-qttest/compare/v1.12.0...v1.13.0) (2026-09-18)
+
+
+### Features
+
+* allow jumping into QML file ([a46512c](https://github.com/KDAB/vscode-qttest/commit/a46512c8b808048f987e913b2b22e3aa89679d32))
+* prefer KDAB DAP debugger when installed ([6a83738](https://github.com/KDAB/vscode-qttest/commit/6a83738c4b1d52c333057cce07352c7e5b2b8104))
+* Support QtQuick Test ([67ed937](https://github.com/KDAB/vscode-qttest/commit/67ed937558654c8cdf54c89766aafede59bd3419))
+* Support QtQuick Test ([f811489](https://github.com/KDAB/vscode-qttest/commit/f8114894531d87b4d75ef2bb629ac39e8ff57cfb))
+
+
+### Bug Fixes
+
+* don't lose test executable output that arrives after the process exits ([0d3b073](https://github.com/KDAB/vscode-qttest/commit/0d3b073dbea9c75638daa237374bf66e9f844e2a))
+* list QtQuickTest functions on Windows ([002dc1f](https://github.com/KDAB/vscode-qttest/commit/002dc1f0c31dc63e566f18d7d776cc39d023e72c))
+
 ## [1.12.0](https://github.com/KDAB/vscode-qttest/compare/v1.11.1...v1.12.0) (2026-07-27)
 
 
