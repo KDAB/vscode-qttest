@@ -130,9 +130,11 @@ export class QtTest {
         return;
       }
 
+      // QtQuickTest lists functions via qDebug(). On Windows, without a console attached,
+      // Qt sends that to OutputDebugString instead of stderr, so force stderr.
       const child = spawn(this.filename, ["-functions"], {
         cwd: this.buildDirPath,
-        env: this.buildSpawnEnv(),
+        env: { ...this.buildSpawnEnv(), QT_FORCE_STDERR_LOGGING: "1" },
       });
 
       child.stdout.on("data", (chunk) => {
@@ -143,7 +145,7 @@ export class QtTest {
         err += chunk.toString();
       });
 
-      child.on("exit", (code) => {
+      child.on("close", (code) => {
         if (code === 0) {
           // QtQuickTest prints its function list via qDebug(), which defaults to
           // stderr, whereas classic QTestLib prints -functions to stdout.
@@ -201,25 +203,19 @@ export class QtTest {
 
       const child = spawn("ldd", [this.filename]);
       let output = "";
-      let result = false;
       child.stdout.on("data", (chunk) => {
-        if (!result) {
-          if (
-            chunk.toString().includes("libQt5Test.so") ||
-            chunk.toString().includes("libQt6Test.so")
-          ) {
-            result = true;
-          }
-        }
-
+        output += chunk.toString();
         if (this.verbose) {
           logMessage(chunk.toString());
         }
       });
 
-      child.on("exit", (code) => {
+      child.on("close", (code) => {
         if (code === 0) {
-          resolve(result);
+          resolve(
+            output.includes("libQt5Test.so") ||
+              output.includes("libQt6Test.so"),
+          );
         } else {
           reject(new Error("qttest: Failed to run ldd"));
         }
@@ -238,18 +234,13 @@ export class QtTest {
         env: this.buildSpawnEnv(),
       });
       let output = "";
-      let result = false;
       child.stdout.on("data", (chunk) => {
-        if (!result) {
-          if (chunk.toString().includes("[testfunction[:testdata]]")) {
-            result = true;
-          }
-        }
+        output += chunk.toString();
       });
 
-      child.on("exit", (code) => {
+      child.on("close", (code) => {
         if (code === 0) {
-          resolve(result);
+          resolve(output.includes("[testfunction[:testdata]]"));
         } else {
           resolve(false);
         }
@@ -273,21 +264,16 @@ export class QtTest {
         env: this.buildSpawnEnv(),
       });
       let output = "";
-      let found = false;
       child.stdout.on("data", (chunk) => {
-        if (!found) {
-          if (
-            chunk
-              .toString()
-              .includes("This program contains tests written using Google Test")
-          ) {
-            found = true;
-          }
-        }
+        output += chunk.toString();
       });
 
-      child.on("exit", () => {
-        resolve(found);
+      child.on("close", () => {
+        resolve(
+          output.includes(
+            "This program contains tests written using Google Test",
+          ),
+        );
       });
     });
   }
@@ -351,7 +337,7 @@ export class QtTest {
         });
       }
 
-      child.on("exit", async (code) => {
+      child.on("close", async (code) => {
         /// Can code even be null ?
         if (code === undefined || code === null) {
           code = -1;

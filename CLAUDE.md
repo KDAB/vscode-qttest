@@ -26,7 +26,7 @@ npm run compile
 ### Testing & Building
 
 ```bash
-# Automated integration tests (runs across Linux, Windows, macOS in CI)
+# Automated integration tests (runs across Linux and macOS in CI)
 npm test                    # Requires Qt 6.8, Ninja, GTest, and VSCode
 ./test.sh                   # Builds the Qt fixtures, then runs ./test_qttest.sh and npm test
 
@@ -50,7 +50,7 @@ Automated integration tests (`npm test`) use `@vscode/test-cli` to run VSCode ex
 
 The `src/qttest-utils/` unit tests (`./test_qttest.sh`) are plain node, so they only need the built Qt fixtures — no VSCode.
 
-The CI workflow (`.github/workflows/build.yml`) runs tests on Linux (with xvfb), Windows, and macOS.
+The CI workflow (`.github/workflows/build.yml`) runs the integration tests on Linux (with xvfb) and macOS. `.github/workflows/qttest-utils.yml` runs `./test_qttest.sh` on Linux, Windows, and macOS.
 
 For interactive testing, use `./run_manual_test.sh`, which is meant for developer-only manual verification and is not run in CI.
 
