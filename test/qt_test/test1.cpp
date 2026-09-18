@@ -13,7 +13,7 @@ class MyTest : public QObject {
 private Q_SLOTS:
   void slotA() {
     QString s = "test pretty printers";
-    QFile f("/tmp/slotA.cwd"); f.open(QIODevice::WriteOnly); f.write(QDir::currentPath().toUtf8());
+    QFile f("/tmp/slotA.cwd"); QVERIFY(f.open(QIODevice::WriteOnly)); f.write(QDir::currentPath().toUtf8());
 
     QRect r(0, 0, 10, 10);
 
