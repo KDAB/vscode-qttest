@@ -130,9 +130,11 @@ export class QtTest {
         return;
       }
 
+      // QtQuickTest lists functions via qDebug(). On Windows, without a console attached,
+      // Qt sends that to OutputDebugString instead of stderr, so force stderr.
       const child = spawn(this.filename, ["-functions"], {
         cwd: this.buildDirPath,
-        env: this.buildSpawnEnv(),
+        env: { ...this.buildSpawnEnv(), QT_FORCE_STDERR_LOGGING: "1" },
       });
 
       child.stdout.on("data", (chunk) => {
