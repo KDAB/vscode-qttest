@@ -4,6 +4,9 @@
       "path": "."
     }
   ],
+  "extensions": {
+    "recommendations": ["KDAB.dap", "ms-vscode.cmake-tools"]
+  },
   "launch": {
     "version": "0.2.0",
     "configurations": [
