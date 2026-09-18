@@ -5,7 +5,7 @@
 import * as vscode from "vscode";
 import * as path from "path";
 import * as fs from "fs";
-import { spawn } from "child_process";
+import { execFileSync, spawn } from "child_process";
 import * as os from "os";
 import * as https from "https";
 import {
@@ -21,6 +21,14 @@ const DEBUGGER_MS_GDB = "ms-vscode.cpptools gdb";
 const DEBUGGER_MS_LLDB = "ms-vscode.cpptools lldb";
 const DEBUGGER_MS_MSVC = "ms-vscode.cpptools msvc";
 const DEBUGGER_CODELLDB = "CodeLLDB";
+const DEBUGGER_KDAP_GDB = "KDAB DAP gdb";
+const DEBUGGER_KDAP_LLDB = "KDAB DAP lldb";
+
+const KDAP_EXTENSION_ID = "KDAB.dap";
+
+/// Older gdbs start the inferior during the DAP launch request, so breakpoints set before it are never hit
+const KDAP_MIN_GDB_MAJOR = 16;
+const KDAP_MIN_GDB_MINOR = 1;
 
 /// A class, so we don't abuse with global variables and functions
 class KDABQtTest {
@@ -64,7 +72,55 @@ class KDABQtTest {
     return conf.get("KDAB.QtTest.useCMakeIntegration") ?? false;
   }
 
+  private cachedGdbSupportsDap: boolean | undefined;
+
+  /// Returns whether the gdb KDAB DAP would use is recent enough to speak DAP properly
+  public gdbSupportsDap(): boolean {
+    if (this.cachedGdbSupportsDap !== undefined) {
+      return this.cachedGdbSupportsDap;
+    }
+
+    const gdbPath =
+      vscode.workspace.getConfiguration().get<string>("kdap.gdb.path") || "gdb";
+    let supported = false;
+    try {
+      const firstLine =
+        execFileSync(gdbPath, ["--version"], {
+          encoding: "utf8",
+          timeout: 5000,
+        }).split("\n")[0] ?? "";
+
+      // e.g. "GNU gdb (GDB) 16.2" or "GNU gdb (Ubuntu 15.0.50.20240403-0ubuntu1) 15.0.50.20240403-git"
+      const versionPart = firstLine.substring(firstLine.lastIndexOf(")") + 1);
+      const match = /(\d+)\.(\d+)/.exec(versionPart);
+      if (match) {
+        const major = parseInt(match[1]!);
+        const minor = parseInt(match[2]!);
+        supported =
+          major > KDAP_MIN_GDB_MAJOR ||
+          (major === KDAP_MIN_GDB_MAJOR && minor >= KDAP_MIN_GDB_MINOR);
+      }
+      this.log(
+        "INFO: gdbSupportsDap: " + firstLine + "; supported=" + supported,
+      );
+    } catch (e: any) {
+      this.log("INFO: gdbSupportsDap: Failed to run gdb: " + e.message);
+    }
+
+    this.cachedGdbSupportsDap = supported;
+    return supported;
+  }
+
   public defaultDebuggerTypeForPlatform(): string {
+    const hasKdap = !!vscode.extensions.getExtension(KDAP_EXTENSION_ID);
+    if (hasKdap) {
+      if (os.platform() === "darwin") {
+        return DEBUGGER_KDAP_LLDB;
+      } else if (os.platform() === "linux" && this.gdbSupportsDap()) {
+        return DEBUGGER_KDAP_GDB;
+      }
+    }
+
     const hasMsCpptools =
       !!vscode.extensions.getExtension("ms-vscode.cpptools");
     const hasCodeLLDB = !!vscode.extensions.getExtension("vadimcn.vscode-lldb");
@@ -223,7 +279,10 @@ class KDABQtTest {
       ("Please install it or chose a different debugger.");
 
       let detail =
-        'Popular debuggers are ms-vscode.cpptools and vadimcn.vscode-lldb (CodeLLDB). Set KDAB.QtTest.debugger setting accordingly. You can also set it to "Existing Launch" and pick a launch configuration as template.';
+        (os.platform() === "win32"
+          ? "Popular debuggers are ms-vscode.cpptools and vadimcn.vscode-lldb (CodeLLDB)."
+          : "Popular debuggers are KDAB.dap (KDAB DAP), ms-vscode.cpptools and vadimcn.vscode-lldb (CodeLLDB).") +
+        ' Set KDAB.QtTest.debugger setting accordingly. You can also set it to "Existing Launch" and pick a launch configuration as template.';
 
       this.log("ERROR: maybeWarnOfMissingDebugger" + msg);
       vscode.window
@@ -251,6 +310,8 @@ class KDABQtTest {
       return "ms-vscode.cpptools";
     } else if (type === "lldb") {
       return "vadimcn.vscode-lldb";
+    } else if (type === "kdap" || type === "kdap-lldb") {
+      return KDAP_EXTENSION_ID;
     }
 
     return "";
@@ -293,6 +354,9 @@ class KDABQtTest {
       dbgConf["MIMode"] = "gdb";
     } else if (option === DEBUGGER_CODELLDB) {
       dbgConf.type = "lldb";
+    } else if (option === DEBUGGER_KDAP_GDB || option === DEBUGGER_KDAP_LLDB) {
+      dbgConf.type = option === DEBUGGER_KDAP_GDB ? "kdap" : "kdap-lldb";
+      dbgConf["qtPrettyPrinters"] = true;
     }
 
     this.log(
@@ -800,8 +864,12 @@ class KDABQtTest {
       }
 
       if (environment.length > 0) {
-        if (debuggerConf.type === "lldb") {
-          // CodeLLDB uses "env" as a key-value object
+        if (
+          debuggerConf.type === "lldb" ||
+          debuggerConf.type === "kdap" ||
+          debuggerConf.type === "kdap-lldb"
+        ) {
+          // CodeLLDB and KDAB DAP use "env" as a key-value object
           const envObj: Record<string, string> = {};
           for (const kv of environment) {
             const idx = kv.indexOf("=");

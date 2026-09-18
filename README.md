@@ -17,7 +17,7 @@ the build directory and `ctest` is invoked to list the available tests, which we
 
 ## Settings
 
-- `KDAB.QtTest.debugger` By default the extension will try to guess what's the best debugger. But you can and probably should explicitly chose which debugger to use. The best setting might be `Existing Launch`, which will use an existing launch config, this way you can reuse your source maps, pretty printers and launch env variables. When reusing an existing launch, its program and args are replaced by the test you're running.
+- `KDAB.QtTest.debugger` By default the extension will try to guess what's the best debugger. On Linux and macOS it prefers [KDAB DAP](https://marketplace.visualstudio.com/items?itemName=KDAB.dap) when it's installed (on Linux only with gdb 16.1 or later), with Qt pretty printers enabled. But you can and probably should explicitly chose which debugger to use. The best setting might be `Existing Launch`, which will use an existing launch config, this way you can reuse your source maps, pretty printers and launch env variables. When reusing an existing launch, its program and args are replaced by the test you're running.
 
 - `KDAB.QtTest.CheckTestLinksToQtTestLib` Only available on Linux. Turn it on in case you have non-Qt tests executables that
 you want to exclude from the list. Patches accepted for Windows and macOS support.
