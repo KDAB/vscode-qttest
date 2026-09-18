@@ -1,0 +1,80 @@
+# SPDX-License-Identifier: MIT
+
+# Runs the src/qttest-utils/ unit tests (plain node, no VSCode)
+
+name: qttest-utils
+
+on:
+  pull_request:
+  push:
+    branches: [master]
+
+jobs:
+  test:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - ubuntu-latest
+          - windows-latest
+          - macos-latest
+    steps:
+      - uses: actions/checkout@v7
+      - name: Use Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: 22.x
+      - name: Install dependencies
+        run: npm ci --prefer-offline
+
+      - name: Install ninja (Windows / Linux)
+        if: runner.os != 'macOS'
+        uses: turtlesec-no/get-ninja@main
+
+      - name: Install ninja (macOS)
+        if: runner.os == 'macOS'
+        run: brew install ninja
+
+      - name: Make sure MSVC is found when Ninja generator is in use
+        if: runner.os == 'Windows'
+        uses: ilammy/msvc-dev-cmd@v1
+
+      - name: Install GTest (Linux)
+        if: runner.os == 'Linux'
+        run: sudo apt-get install -y libgtest-dev
+
+      - name: Install GTest (macOS)
+        if: runner.os == 'macOS'
+        run: brew install googletest
+
+      - name: Install GTest (Windows)
+        if: runner.os == 'Windows'
+        run: vcpkg install gtest:x64-windows
+        env:
+          VCPKG_ROOT: C:\vcpkg
+
+      - name: Install Qt 6.8.*
+        uses: jurplel/install-qt-action@v4
+        with:
+          version: 6.8.*
+          cache: true
+
+      - name: Build Qt test fixtures (Windows)
+        if: runner.os == 'Windows'
+        run: |
+          cmake -S test/qt_test --preset=dev -DCMAKE_TOOLCHAIN_FILE=C:/vcpkg/scripts/buildsystems/vcpkg.cmake
+          cmake --build test/qt_test/build-dev
+
+      - name: Build Qt test fixtures (non-Windows)
+        if: runner.os != 'Windows'
+        run: |
+          cmake -S test/qt_test --preset=dev
+          cmake --build test/qt_test/build-dev
+
+      - name: Run qttest-utils unit tests
+        shell: bash
+        run: ./test_qttest.sh
+        env:
+          # test_quick needs a platform plugin just to answer -help; there's no display on Linux CI
+          QT_QPA_PLATFORM: offscreen
