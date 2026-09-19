@@ -2,6 +2,19 @@
 
 
 
+## [1.14.0](https://github.com/KDAB/vscode-qttest/compare/v1.13.0...v1.14.0) (2026-09-19)
+
+
+### Features
+
+* bundle extension with esbuild to reduce packaged file count ([7a1c15d](https://github.com/KDAB/vscode-qttest/commit/7a1c15dc6d1d637775d3bbfa10e016e81429d992))
+* bundle extension with esbuild to reduce packaged file count ([6a307ae](https://github.com/KDAB/vscode-qttest/commit/6a307aed256015511d49f8086fc96ab7f24fd840))
+
+
+### Bug Fixes
+
+* get thisExtension from the running extension in integration tests ([0da75c1](https://github.com/KDAB/vscode-qttest/commit/0da75c185cf07b4d8994c5b0af3da33f08fa5584))
+
 ## [1.13.0](https://github.com/KDAB/vscode-qttest/compare/v1.12.0...v1.13.0) (2026-09-18)
 
 
