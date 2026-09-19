@@ -3,9 +3,11 @@
 
 import * as assert from "assert";
 import * as vscode from "vscode";
+import type { KDABQtTest } from "../../extension";
 
 suite("Debug Environment Variables", function () {
   let controller: vscode.TestController;
+  let thisExtension: KDABQtTest;
 
   function stripExe(label: string): string {
     return label.replace(/\.exe$/i, "");
@@ -14,10 +16,10 @@ suite("Debug Environment Variables", function () {
   suiteSetup(async function () {
     this.timeout(120000);
 
-    // Activate our extension — returns the TestController
+    // Activate our extension — returns the TestController and the live extension instance
     const ext = vscode.extensions.getExtension("KDAB.qttests");
     assert.ok(ext, "Extension should be installed");
-    controller = await ext.activate();
+    ({ controller, thisExtension } = await ext.activate());
     assert.ok(controller, "activate() should return a TestController");
 
     // Tell cmake-tools to select the "dev" preset, configure, and build
@@ -58,8 +60,6 @@ suite("Debug Environment Variables", function () {
     // CMakeLists.txt sets: set_tests_properties(test1 PROPERTIES ENVIRONMENT "MY_ENV=VALUE")
     // test1.cpp slotB does: QCOMPARE(qgetenv("MY_ENV"), QByteArray("VALUE"))
     // So slotB only passes if the env var is propagated to the debugger.
-
-    const { thisExtension } = await import("../../extension");
 
     let test1Item: vscode.TestItem | undefined;
     controller.items.forEach((item) => {

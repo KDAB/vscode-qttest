@@ -13,7 +13,7 @@ suite("Test Discovery", function () {
     // Activate our extension — returns the TestController
     const ext = vscode.extensions.getExtension("KDAB.qttests");
     assert.ok(ext, "Extension should be installed");
-    controller = await ext.activate();
+    ({ controller } = await ext.activate());
     assert.ok(controller, "activate() should return a TestController");
 
     // Tell cmake-tools to select the "dev" preset, configure, and build

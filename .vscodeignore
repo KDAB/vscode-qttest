@@ -1,4 +1,5 @@
 .vscode/**
+**/.vscode/**
 .vscode-test/**
 src/**
 .gitignore
@@ -8,7 +9,9 @@ vsc-extension-quickstart.md
 **/.eslintrc.json
 **/*.map
 **/*.ts
-out/test/**
+out/**
+node_modules/**
+esbuild.js
 test/
 cliff.toml
 vscode.code-workspace
@@ -28,6 +31,7 @@ CLAUDE.md
 AGENTS.md
 .release-please-manifest.json
 test.sh
+test_qttest.sh
 eslint.config.mjs
 build_package.sh
 upload_package.sh

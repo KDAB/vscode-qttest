@@ -31,7 +31,7 @@ const KDAP_MIN_GDB_MAJOR = 16;
 const KDAP_MIN_GDB_MINOR = 1;
 
 /// A class, so we don't abuse with global variables and functions
-class KDABQtTest {
+export class KDABQtTest {
   public channel: vscode.OutputChannel | undefined;
   public testMap = new WeakMap<vscode.TestItem, QtTest>();
   public individualTestMap = new WeakMap<vscode.TestItem, QtTestSlot>();
@@ -1199,9 +1199,16 @@ async function installGdbQtPrettyPrinters(): Promise<void> {
   }
 }
 
-export function activate(
-  context: vscode.ExtensionContext,
-): vscode.TestController {
+/// Returned as the extension's exports (vscode.extensions.getExtension(id).exports),
+/// so integration tests can reach the running singleton without importing the module
+/// directly — a separate import would resolve to a different module instance once
+/// the extension is bundled (its main entry point is the bundled dist/extension.js).
+export interface ActivationResult {
+  controller: vscode.TestController;
+  thisExtension: KDABQtTest;
+}
+
+export function activate(context: vscode.ExtensionContext): ActivationResult {
   thisExtension.log("activated!");
 
   const controller = vscode.tests.createTestController("kdab.qttest", "Qt");
@@ -1311,7 +1318,7 @@ export function activate(
     ),
   );
 
-  return controller;
+  return { controller, thisExtension };
 }
 
 export function deactivate() {}

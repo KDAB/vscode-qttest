@@ -5,11 +5,13 @@ import * as assert from "assert";
 import * as fs from "fs";
 import * as os from "os";
 import * as vscode from "vscode";
+import type { KDABQtTest } from "../../extension";
 
 const CWD_FILE = "/tmp/slotA.cwd";
 
 suite("Debug CWD", function () {
   let controller: vscode.TestController;
+  let thisExtension: KDABQtTest;
 
   function stripExe(label: string): string {
     return label.replace(/\.exe$/i, "");
@@ -25,7 +27,7 @@ suite("Debug CWD", function () {
 
     const ext = vscode.extensions.getExtension("KDAB.qttests");
     assert.ok(ext, "Extension should be installed");
-    controller = await ext.activate();
+    ({ controller, thisExtension } = await ext.activate());
     assert.ok(controller, "activate() should return a TestController");
 
     console.log("[debug-cwd-test] Setting configure preset to 'dev'...");
@@ -74,8 +76,6 @@ suite("Debug CWD", function () {
     // We stub debuggerConf() to return a config with cwd="/tmp/" (simulating
     // the "CustomCWD" Existing Launch config). If cwd is properly passed
     // through to the debugger, slotA will write "/tmp" to the file.
-
-    const { thisExtension } = await import("../../extension");
 
     let test1Item: vscode.TestItem | undefined;
     controller.items.forEach((item) => {
