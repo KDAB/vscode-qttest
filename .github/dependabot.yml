@@ -17,3 +17,5 @@ updates:
     ignore:
       - dependency-name: "@types/node"
         update-types: ["version-update:semver-major"]
+      # Must match engines.vscode in package.json, so never bump it automatically
+      - dependency-name: "@types/vscode"
