@@ -2,6 +2,13 @@
 
 
 
+## [1.15.0](https://github.com/KDAB/vscode-qttest/compare/v1.14.0...v1.15.0) (2026-09-28)
+
+
+### Features
+
+* remove the command that downloads gdb Qt pretty printers ([818a52c](https://github.com/KDAB/vscode-qttest/commit/818a52ccbbb947c8e642fbfd7f9c789cdafdefde))
+
 ## [1.14.0](https://github.com/KDAB/vscode-qttest/compare/v1.13.0...v1.14.0) (2026-09-19)
 
 
