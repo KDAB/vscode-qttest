@@ -99,10 +99,6 @@
       {
         "command": "KDAB.qttest.debugTest",
         "title": "Debug selection..."
-      },
-      {
-        "command": "KDAB.qttest.installGdbPrettyPrinters",
-        "title": "Install gdb Qt pretty printers"
       }
     ],
     "submenus": [
@@ -122,12 +118,6 @@
       "kdab.qttest.menu": [
         {
           "command": "KDAB.qttest.debugTest"
-        }
-      ],
-      "commandPalette": [
-        {
-          "command": "KDAB.qttest.installGdbPrettyPrinters",
-          "when": "isLinux"
         }
       ]
     }
