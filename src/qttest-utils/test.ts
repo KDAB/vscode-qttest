@@ -7,6 +7,10 @@ import path from "path";
 import { CMakeTests } from "./cmake";
 import { QtTest, QtTests } from "./qttest";
 
+// Build dir of the Qt fixtures; override with QTTEST_BUILD_DIR to test e.g. the
+// build-dev-no-qmldebug preset.
+const BUILD_DIR = process.env.QTTEST_BUILD_DIR ?? "test/qt_test/build-dev";
+
 // Be sure to build the Qt tests with CMake first
 // See .github/workflows/ci.yml
 
@@ -57,14 +61,14 @@ async function runTests(buildDirPath: string) {
   console.log("PASS: test1 has expected environment");
 
   let expectedExecutables = [
-    "test/qt_test/build-dev/test1",
-    "test/qt_test/build-dev/test2",
-    "test/qt_test/build-dev/test3",
-    "test/qt_test/build-dev/non_qttest",
-    "test/qt_test/build-dev/test_quick",
-    "test/qt_test/build-dev/test_gtest",
+    BUILD_DIR + "/test1",
+    BUILD_DIR + "/test2",
+    BUILD_DIR + "/test3",
+    BUILD_DIR + "/non_qttest",
+    BUILD_DIR + "/test_quick",
+    BUILD_DIR + "/test_gtest",
     "test/qt_test/test.sh",
-    "test/qt_test/build-dev/nested_dir/test_nested",
+    BUILD_DIR + "/nested_dir/test_nested",
   ];
 
   if (qt.qtTestExecutables.length !== expectedExecutables.length) {
@@ -137,11 +141,11 @@ async function runTests(buildDirPath: string) {
 
   // 1. Test that the executable test names are correct:
   let expectedFilteredExecutables = [
-    "test/qt_test/build-dev/test1",
-    "test/qt_test/build-dev/test2",
-    "test/qt_test/build-dev/test3",
-    "test/qt_test/build-dev/test_quick",
-    "test/qt_test/build-dev/nested_dir/test_nested",
+    BUILD_DIR + "/test1",
+    BUILD_DIR + "/test2",
+    BUILD_DIR + "/test3",
+    BUILD_DIR + "/test_quick",
+    BUILD_DIR + "/nested_dir/test_nested",
   ];
   var i = 0;
   for (var executable of qt.qtTestExecutables) {
@@ -171,14 +175,14 @@ async function runTests(buildDirPath: string) {
     [key: string]: string[];
   }
   let expectedSlots: ExpectedSlots = {
-    "test/qt_test/build-dev/test1": ["slotA", "slotB", "slotC"],
-    "test/qt_test/build-dev/test2": ["slotC", "slotD", "slotFail"],
-    "test/qt_test/build-dev/test3": ["slotFail2", "slotF", "slotG"],
-    "test/qt_test/build-dev/test_quick": [
+    [BUILD_DIR + "/test1"]: ["slotA", "slotB", "slotC"],
+    [BUILD_DIR + "/test2"]: ["slotC", "slotD", "slotFail"],
+    [BUILD_DIR + "/test3"]: ["slotFail2", "slotF", "slotG"],
+    [BUILD_DIR + "/test_quick"]: [
       "QuickTest::test_addition",
       "QuickTest::test_string",
     ],
-    "test/qt_test/build-dev/nested_dir/test_nested": [
+    [BUILD_DIR + "/nested_dir/test_nested"]: [
       "slotNested1",
       "slotNested2",
       "slotNested3",
@@ -203,7 +207,7 @@ async function runTests(buildDirPath: string) {
   // bareName strips the "TestCaseName::" qualifier QtQuickTest adds.
   for (var executable of qt.qtTestExecutables) {
     let expectedIsQML =
-      executable.relativeFilename() === "test/qt_test/build-dev/test_quick";
+      executable.relativeFilename() === BUILD_DIR + "/test_quick";
     if (executable.isQML !== expectedIsQML) {
       console.error(
         "Expected isQML=" +
@@ -411,6 +415,6 @@ async function runNonQtTest(buildDirPath: string) {
   await nonQtExecutable.runTest();
 }
 
-runTests("test/qt_test/build-dev/");
-runNonQtTest("test/qt_test/build-dev/");
+runTests(BUILD_DIR + "/");
+runNonQtTest(BUILD_DIR + "/");
 runCodeModelTests("test/test_cmake_codemodel.json");

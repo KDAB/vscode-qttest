@@ -10,6 +10,15 @@
                 "CMAKE_BUILD_TYPE": "Debug",
                 "CMAKE_EXPORT_COMPILE_COMMANDS": "ON"
             }
+        },
+        {
+            "name": "dev-no-qmldebug",
+            "displayName": "dev without QT_QML_DEBUG",
+            "inherits": "dev",
+            "binaryDir": "${sourceDir}/build-dev-no-qmldebug",
+            "cacheVariables": {
+                "ENABLE_QML_DEBUG": "OFF"
+            }
         }
     ]
 }
