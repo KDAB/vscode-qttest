@@ -149,7 +149,13 @@ export class QtTest {
         if (code === 0) {
           // QtQuickTest prints its function list via qDebug(), which defaults to
           // stderr, whereas classic QTestLib prints -functions to stdout.
-          slotNames = slotNames.concat(output.split("\n"), err.split("\n"));
+          // stderr can also carry unrelated noise, e.g. Qt's "QML debugging is
+          // enabled" warning, so only accept "TestCase::function()" lines from it.
+          const qmlLines = err
+            .split("\n")
+            .map((line) => line.trim())
+            .filter((line) => /^[\w.]+::[\w.]+\(\)$/.test(line));
+          slotNames = slotNames.concat(output.split("\n"), qmlLines);
           slotNames = slotNames.map((entry) => entry.trim().replace("()", ""));
           slotNames = slotNames.filter((entry) => entry.length > 0);
 
