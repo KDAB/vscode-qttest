@@ -23,4 +23,4 @@ echo "Compiling..."
 npm run compile
 
 echo "vsce package..."
-vsce package
+npx --yes @vscode/vsce package
