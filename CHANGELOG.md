@@ -2,6 +2,13 @@
 
 
 
+## [1.15.1](https://github.com/KDAB/vscode-qttest/compare/v1.15.0...v1.15.1) (2026-10-10)
+
+
+### Bug Fixes
+
+* ignore unrelated stderr output when listing QtQuickTest functions ([7b5d22a](https://github.com/KDAB/vscode-qttest/commit/7b5d22a6f061e79fa1810984a303184929bf87e2))
+
 ## [1.15.0](https://github.com/KDAB/vscode-qttest/compare/v1.14.0...v1.15.0) (2026-09-28)
 
 
